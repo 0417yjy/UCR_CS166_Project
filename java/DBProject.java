@@ -17,6 +17,7 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+//import java.sql.PreparedStatement; // for using prepared statements
 import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
@@ -63,6 +64,32 @@ public class DBProject {
          System.exit(-1);
       }//end catch
    }//end DBProject
+
+
+  /**
+   * Only used for query like "SELECT COUNT(*) FROM $Relation WHERE $Condition"
+   * Return the count result
+   *
+   * @param query the input query string
+   * @throws java.sql.SQLException when failed to execute the query
+   */
+  public int getCountByExecute (String query) throws SQLException {
+    int result;
+    // creates a statement object
+    Statement stmt = this._connection.createStatement();
+
+    // issues the update instruction
+    ResultSet rs =  stmt.executeQuery(query);
+
+    // gets the result of count
+    rs.next();
+    result = rs.getInt(1);
+
+    // close the instruction
+    stmt.close();
+
+    return result;
+  }
 
    /**
     * Method to execute an update SQL statement.  Update SQL instructions
@@ -255,9 +282,116 @@ public class DBProject {
    
    public static void addCustomer(DBProject esql){
 	  // Given customer details add the customer in the DB 
-      // Your code goes here.
-      // ...
-      // ...
+      boolean address_inserted = false;
+      boolean phno_inserted = false;
+      boolean dob_inserted = false;
+      boolean gender_inserted = false;
+      int new_id = 0;
+
+      try{
+        String query = "SELECT count(*) FROM Customer";
+        new_id = esql.getCountByExecute(query); // sets new customer's id
+      } catch (Exception e) {
+        System.err.println(e.getMessage());
+      }
+    
+      // set values and insert a new one
+      try{
+         String query = "INSERT INTO Customer (customerID, fName, lName";
+
+         //get user inputs
+         System.out.print("\tEnter First Name: ");
+         String input = in.readLine();
+         while(input.length() == 0) {
+            // if user didn't input something but just enter
+            System.out.print("\tFirst Name cannot be null! Try again: ");
+            input = in.readLine();
+         }
+         String fname = input;
+
+         System.out.print("\tEnter Last Name: ");
+         input = in.readLine();
+         while(input.length() == 0) {
+            // if user didn't input something but just enter
+            System.out.print("\tLast Name cannot be null! Try again: ");
+            input = in.readLine();
+         }
+         String lname = input;
+
+         System.out.print("\tEnter Address: ");
+         input = in.readLine();
+         String address = "";
+         if(input.length() != 0) {
+            // if user insert address
+            address_inserted = true;
+            address = input;
+         }
+
+         System.out.print("\tEnter Phone Number: ");
+         input = in.readLine();
+         String phno = "";
+         if(input.length() != 0) {
+            // if user insert phone number
+            phno_inserted = true;
+            phno = input;
+         }
+
+         System.out.print("\tEnter Birth of Date(dd/mm/yyyy): ");
+         input = in.readLine();
+         String dob = "";
+         if(input.length() != 0) {
+            // if user insert DOB
+            dob_inserted = true;
+            dob = input;
+         }
+
+         System.out.print("\tEnter Gender(Male / Female / Other): ");
+         input = in.readLine();
+         String gender = "";
+         if(input.length() != 0) {
+            // if user insert gender
+            gender_inserted = true;
+            gender = input;
+         }
+
+         // make query statement
+         if(address_inserted) {
+            query += ", Address";
+         }
+         if(phno_inserted) {
+            query += ", phNo";
+         }
+         if(dob_inserted) {
+            query += ", DOB";
+         }
+         if(gender_inserted) {
+            query += ", gender";
+         }
+         query += (") VALUES (" + Integer.toString(new_id) + ", '" + fname + "', '" + lname + "'");
+
+         if(address_inserted) {
+            query += (",'" + address + "'");
+         }
+         if(phno_inserted) {
+            query += ("," + phno);
+         }
+         if(dob_inserted) {
+            query += (",'" + dob + "'");
+         }
+         if(gender_inserted) {
+            query += (",'" + gender + "'");
+         }
+         query += ")";
+
+         //System.out.println("Query made is: " + query);
+         System.out.print("Executing query...");
+         esql.executeUpdate(query);
+         System.out.println("Completed");
+
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }
+
    }//end addCustomer
 
    public static void addRoom(DBProject esql){
