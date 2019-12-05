@@ -499,7 +499,101 @@ public class DBProject {
 
    public static void bookRoom(DBProject esql){
       // Given hotelID, roomNo and customer Name create a booking in the DB 
-        
+        boolean valid_name = false;
+        int customer_id = 0;
+        int new_id = 0;
+
+        try{
+            String query = "SELECT count(*) FROM Booking";
+            new_id = esql.getCountByExecute(query); // sets new customer's id
+          } catch (Exception e) {
+            System.err.println(e.getMessage());
+          }
+
+        // set values and insert a new one
+      try{
+        String query = "INSERT INTO Booking (bID, customer, hotelID, roomNo, bookingDate, noOfPeople, price) VALUES (";
+
+        //get user inputs
+        System.out.print("\t*Enter HotelID: ");
+        String input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tHotelID cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String hotelID = input;
+
+        System.out.print("\tEnter RoomNo: ");
+        input = in.readLine();
+        while(input.length() == 0) {
+            // if user didn't input something but just enter
+            System.out.print("\tRoomNo cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String RoomNo = input;
+
+        System.out.print("\tEnter Customer's Name([fname] [lname]): ");
+        input = in.readLine();
+        while(!valid_name) {
+            input = in.readLine();
+            if(input.length() == 0) {
+                // if user didn't input something but just enter
+                System.out.print("\tYou must enter name! Try again: ");
+             }
+            customer_id = getIdByName(input);
+            if(customer_id == -1) {
+                // searching customer failed
+                System.out.print("\tInvalid name! Try again: ");
+            }
+            else {
+                // found customer id. go to the next step
+                valid_name = true;
+            }
+        }
+
+        System.out.print("\tEnter Booking Date(dd/mm/yyyy): ");
+        input = in.readLine();
+        while(input.length() == 0) {
+            // if user didn't input something but just enter
+            System.out.print("\tBooking Date cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String bookingDate = input;
+
+        System.out.print("\tEnter Number of booking people (if null, 1 will be inserted): ");
+        input = in.readLine();
+        int num_of_people = 0;
+        if(input.length() == 0) {
+            // if user didn't input something but just enter
+            // set 1
+            num_of_people = 1;
+        }
+        else {
+            try {
+                num_of_people = Integer.parseInt(input);
+            }
+            catch(NumberFormatException e) {
+                System.out.println("Failed to get number from your input! Number of booking people will be 1..");
+                num_of_people = 1;
+            }
+        }
+
+        // calculate price
+        // there is a room type, need to calculate how cost per each type
+        int price = 0; // not yet implemented
+
+        // make query statement
+        query += (Integer.toString(new_id) + ", " + Integer.toString(customer_id) + ", " + hotelID + ", " + RoomNo + ", ''" + bookingDate + "', " + Integer.toString(num_of_people) + ", " + Integer.toString(price));
+
+        System.out.println("Query made is: " + query);
+        System.out.print("Executing query...");
+        esql.executeUpdate(query);
+        System.out.println("Completed");
+
+     }catch(Exception e){
+        System.err.println (e.getMessage());
+     }
    }//end bookRoom
 
    public static void assignHouseCleaningToRoom(DBProject esql){
