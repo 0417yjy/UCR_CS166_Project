@@ -25,6 +25,11 @@ import java.io.InputStreamReader;
 import java.util.Random; // for making price
 import java.util.StringTokenizer; // for get id by given name
 
+// to get today's date
+import java.util.Date; 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 /**
  * This class defines a simple embedded SQL utility class that is designed to
  * work with PostgreSQL JDBC drivers.
@@ -116,7 +121,7 @@ public class DBProject {
    * @param relation Indicates which relation to search
    * @throws java.sql.SQLException when failed to execute the query
    */
-   public int getId(int mod, String name_or_ssn, String relation) throws SQLException {
+   public int getID(int mod, String name_or_ssn, String relation) throws SQLException {
     if(mod == 1) {
         StringTokenizer st = new StringTokenizer(name_or_ssn);
         String query = "";
@@ -164,7 +169,7 @@ public class DBProject {
     else if(mod == 2) {
         // make query
         String query = "SELECT employerID FROM Staff WHERE SSN = " + name_or_ssn;
-        System.out.println("Query made is: " + query);
+        //System.out.println("Query made is: " + query);
 
         // creates a statement object
         Statement stmt = this._connection.createStatement();
@@ -607,7 +612,7 @@ public class DBProject {
                 // if user didn't input something but just enter
                 System.out.print("\tYou must enter name! Try again: ");
              }
-            customer_id = esql.getId(1, input, "Customer");
+            customer_id = esql.getID(1, input, "Customer");
             if(customer_id == -1) {
                 // searching customer failed
                 System.out.print("\tInvalid name! Try again: ");
@@ -700,7 +705,7 @@ public class DBProject {
    
    public static void repairRequest(DBProject esql){
 	  // Given a hotelID, Staff SSN, roomNo, repairID , date create a repair request in the DB
-      int new_id = getNewID("Request");
+      int new_id = esql.getNewID("Request");
       boolean description_inserted = false;
       boolean rptype_inserted = false;
 
@@ -728,10 +733,10 @@ public class DBProject {
         }
         String m_SSN = input;
         //get manager's id
-        int m_id = getID(2, input, "Staff");
+        int m_id = esql.getID(2, input, "Staff");
 
         System.out.print("\t*Enter Room No: ");
-        String input = in.readLine();
+        input = in.readLine();
         while(input.length() == 0) {
            // if user didn't input something but just enter
            System.out.print("\tRoom No cannot be null! Try again: ");
@@ -739,17 +744,17 @@ public class DBProject {
         }
         String roomNo = input;
 
-        System.out.print("\t*Enter Repair Date(dd/mm/yyyy): ");
-        String input = in.readLine();
+        System.out.print("\t*Enter Repair Date(mm/dd/yyyy): ");
+        input = in.readLine();
         while(input.length() == 0) {
            // if user didn't input something but just enter
-           System.out.print("\Repair Date cannot be null! Try again: ");
+           System.out.print("\tRepair Date cannot be null! Try again: ");
            input = in.readLine();
         }
         String rp_date = input;
 
         System.out.print("\t*Enter Maintenance Company ID: ");
-        String input = in.readLine();
+        input = in.readLine();
         while(input.length() == 0) {
            // if user didn't input something but just enter
            System.out.print("\tMaintenance Company ID cannot be null! Try again: ");
@@ -777,38 +782,42 @@ public class DBProject {
 
         // complete repair insert query
         if(description_inserted) {
-            rp_query += ", description"
+            rp_query += ", description";
         }
         if(rptype_inserted) {
-            rp_query += ", repairType"
+            rp_query += ", repairType";
         }
-        rp_query += ") VALUES (" + Integer(new_id).toString() + ", " + hotelID + ", " + roomNo + ", " + mc_id + ", '" + rp_date + "'";
+        rp_query += (") VALUES (" + Integer.toString(new_id) + ", " + hotelID + ", " + roomNo + ", " + mc_id + ", '" + rp_date + "'");
         if(description_inserted) {
             rp_query += ", '" + description + "'";
+        }
+        if(rptype_inserted) {
+            rp_query += ", '" + rptype + "'";
         }
         rp_query += ")";
 
         // insert into repair relation
         System.out.println("Query made is: " + rp_query);
         System.out.print("Executing query...");
-        esql.executeUpdate(query);
+        esql.executeUpdate(rp_query);
         System.out.println("Completed");
 
         // complete request insert query
-        DateFormat dateformat = new SimpleDateFormat("mm/dd/yyyy");
+        DateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
         Date date = new Date(); // to get today's date
         if(description_inserted) {
-            rq_query += ", description"
+            rq_query += ", description";
         }
-        rq_query += ") VALUES (" + Integer(new_id).toString() + ", " + Integer(m_id).toString() + ", " + Integer(new_id).toString() + ", '" + dateformat.format(date) + "'";
+        rq_query += ") VALUES (" + Integer.toString(new_id) + ", " + Integer.toString(m_id) + ", " + Integer.toString(new_id) + ", '" + dateformat.format(date) + "'";
         if(description_inserted) {
             rq_query += ", '" + description + "'";
         }
+        rq_query += ")";
 
         // insert into request relation
-        System.out.println("Query made is: " + rp_query);
+        System.out.println("Query made is: " + rq_query);
         System.out.print("Executing query...");
-        esql.executeUpdate(query);
+        esql.executeUpdate(rq_query);
         System.out.println("Completed");
     } catch(Exception e){
         System.err.println (e.getMessage());
