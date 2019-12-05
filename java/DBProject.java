@@ -797,7 +797,7 @@ public class DBProject {
         rp_query += ")";
 
         // insert into repair relation
-        System.out.println("Query made is: " + rp_query);
+        //System.out.println("Query made is: " + rp_query);
         System.out.print("Executing query...");
         esql.executeUpdate(rp_query);
         System.out.println("Completed");
@@ -815,7 +815,7 @@ public class DBProject {
         rq_query += ")";
 
         // insert into request relation
-        System.out.println("Query made is: " + rq_query);
+        //System.out.println("Query made is: " + rq_query);
         System.out.print("Executing query...");
         esql.executeUpdate(rq_query);
         System.out.println("Completed");
@@ -833,9 +833,29 @@ public class DBProject {
    
    public static void numberOfBookedRooms(DBProject esql){
 	  // Given a hotelID, get the count of rooms booked
-      // Your code goes here.
-      // ...
-      // ...
+      try{
+        String query = "SELECT COUNT(*) as BookedRooms FROM Booking WHERE hotelID = ";
+
+        //get user inputs
+        System.out.print("\t*Enter HotelID: ");
+        String input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tHotelID cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String hotelID = input;
+
+        DateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
+        Date date = new Date(); // to get today's date
+
+        query += hotelID + " AND bookingDate = '" + dateformat.format(date) + "'";
+        //System.out.println("Query made is: " + query);
+        int rowCount = esql.executeQuery(query);
+        System.out.println("total row(s): " + rowCount);
+    } catch (Exception e) {
+        System.err.println (e.getMessage());
+    }
    }//end numberOfBookedRooms
    
    public static void listHotelRoomBookingsForAWeek(DBProject esql){
