@@ -23,7 +23,7 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Random; // for making price
-import java.tuil.StringTokenizer; // for get id by given name
+import java.util.StringTokenizer; // for get id by given name
 
 /**
  * This class defines a simple embedded SQL utility class that is designed to
@@ -103,23 +103,22 @@ public class DBProject {
       }
    }
 
-   public static int getIdByName(String fullname, String relation) {
+   public int getIdByName(String fullname, String relation) throws SQLException {
     StringTokenizer st = new StringTokenizer(fullname);
     String query = "";
     // make initial query
     switch(relation) {
         case "Customer":
-        query = "SELECT customerID FROM Customer WHERE fName = ";
+        query = "SELECT customerID FROM Customer WHERE fName = '";
         break;
 
         case "Staff":
-        query = "SELECT employerID FROM Staff WHERE fname = ";
+        query = "SELECT employerID FROM Staff WHERE fname = '";
         break;
 
         default:
         System.out.println("Couldn't find the relation!");
         return -1;
-        break;
     }
 
     // get fname and lname
@@ -137,8 +136,9 @@ public class DBProject {
     }
 
     // complete query
-    query += (fname + " AND lname = " + lname);
-
+    query += (fname + "' AND lname = '" + lname + "'");
+    System.out.println("Query made is: " + query);
+    
     // creates a statement object
     Statement stmt = this._connection.createStatement();
     // issues the update instruction
@@ -581,14 +581,13 @@ public class DBProject {
         String RoomNo = input;
 
         System.out.print("\tEnter Customer's Name([fname] [lname]): ");
-        input = in.readLine();
         while(!valid_name) {
             input = in.readLine();
             if(input.length() == 0) {
                 // if user didn't input something but just enter
                 System.out.print("\tYou must enter name! Try again: ");
              }
-            customer_id = getIdByName(input);
+            customer_id = esql.getIdByName(input, "Customer");
             if(customer_id == -1) {
                 // searching customer failed
                 System.out.print("\tInvalid name! Try again: ");
@@ -631,7 +630,7 @@ public class DBProject {
         int price = 0; // not yet implemented
         String roomType;
         // creates a statement object
-        Statement stmt = this._connection.createStatement();
+        Statement stmt = esql._connection.createStatement();
          // issues the update instruction
         ResultSet rs =  stmt.executeQuery("SELECT roomType FROM Room Where hotelID = " + hotelID + " AND roomNo = " + RoomNo);
         // gets the result of count
@@ -661,7 +660,7 @@ public class DBProject {
         }
 
         // make query statement
-        query += (Integer.toString(new_id) + ", " + Integer.toString(customer_id) + ", " + hotelID + ", " + RoomNo + ", ''" + bookingDate + "', " + Integer.toString(num_of_people) + ", " + Integer.toString(price));
+        query += (Integer.toString(new_id) + ", " + Integer.toString(customer_id) + ", " + hotelID + ", " + RoomNo + ", '" + bookingDate + "', " + Integer.toString(num_of_people) + ", " + Integer.toString(price) + ")");
 
         System.out.println("Query made is: " + query);
         System.out.print("Executing query...");
