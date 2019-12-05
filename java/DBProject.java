@@ -213,7 +213,8 @@ public class DBProject {
 				System.out.println("14. List the repairs made by maintenance company");
 				System.out.println("15. Get top k maintenance companies based on repair count");
 				System.out.println("16. Get number of repairs occurred per year for a given hotel room");
-				System.out.println("17. < EXIT");
+                System.out.println("17. Custom Query");
+				System.out.println("18. < EXIT");
 
             switch (readChoice()){
 				   case 1: addCustomer(esql); break;
@@ -232,7 +233,8 @@ public class DBProject {
 				   case 14: listRepairsMade(esql); break;
 				   case 15: topKMaintenanceCompany(esql); break;
 				   case 16: numberOfRepairsForEachRoomPerYear(esql); break;
-				   case 17: keepon = false; break;
+                   case 17: executeCustom(esql); break;
+				   case 18: keepon = false; break;
 				   default : System.out.println("Unrecognized choice!"); break;
             }//end switch
          }//end while
@@ -278,6 +280,16 @@ public class DBProject {
       }while (true);
       return input;
    }//end readChoice
+
+   public static void executeCustom(DBProject esql) {
+      try {
+        System.out.print("\tEnter your query (SELECT only): ");
+        String query = in.readLine();
+        esql.executeQuery(query);
+      } catch(Exception e) {
+        System.err.println(e.getMessage());
+      }
+   }
 
    
    public static void addCustomer(DBProject esql){
@@ -403,8 +415,7 @@ public class DBProject {
 
    public static void addMaintenanceCompany(DBProject esql){
       // Given maintenance Company details add the maintenance company in the DB
-      // ...
-      // ...
+      
    }//end addMaintenanceCompany
 
    public static void addRepair(DBProject esql){
