@@ -65,7 +65,7 @@ public class DBProject {
       }//end catch
    }//end DBProject
 
-
+/*********** Newly defined methods start from here ***********/
   /**
    * Only used for query like "SELECT COUNT(*) FROM $Relation WHERE $Condition"
    * Return the count result
@@ -90,6 +90,17 @@ public class DBProject {
 
     return result;
   }
+
+  public static void executeCustom(DBProject esql) {
+      try {
+        System.out.print("\tEnter your query (SELECT only): ");
+        String query = in.readLine();
+        esql.executeQuery(query);
+      } catch(Exception e) {
+        System.err.println(e.getMessage());
+      }
+   }
+/*********** Newly defined methods start from here ***********/
 
    /**
     * Method to execute an update SQL statement.  Update SQL instructions
@@ -213,7 +224,7 @@ public class DBProject {
 				System.out.println("14. List the repairs made by maintenance company");
 				System.out.println("15. Get top k maintenance companies based on repair count");
 				System.out.println("16. Get number of repairs occurred per year for a given hotel room");
-                System.out.println("17. Custom Query");
+            System.out.println("17. Custom Query");
 				System.out.println("18. < EXIT");
 
             switch (readChoice()){
@@ -233,7 +244,7 @@ public class DBProject {
 				   case 14: listRepairsMade(esql); break;
 				   case 15: topKMaintenanceCompany(esql); break;
 				   case 16: numberOfRepairsForEachRoomPerYear(esql); break;
-                   case 17: executeCustom(esql); break;
+               case 17: executeCustom(esql); break;
 				   case 18: keepon = false; break;
 				   default : System.out.println("Unrecognized choice!"); break;
             }//end switch
@@ -280,17 +291,6 @@ public class DBProject {
       }while (true);
       return input;
    }//end readChoice
-
-   public static void executeCustom(DBProject esql) {
-      try {
-        System.out.print("\tEnter your query (SELECT only): ");
-        String query = in.readLine();
-        esql.executeQuery(query);
-      } catch(Exception e) {
-        System.err.println(e.getMessage());
-      }
-   }
-
    
    public static void addCustomer(DBProject esql){
 	  // Given customer details add the customer in the DB 
@@ -498,10 +498,8 @@ public class DBProject {
    }//end addRepair
 
    public static void bookRoom(DBProject esql){
-	  // Given hotelID, roomNo and customer Name create a booking in the DB 
-      // Your code goes here.
-      // ...
-      // ...
+      // Given hotelID, roomNo and customer Name create a booking in the DB 
+        
    }//end bookRoom
 
    public static void assignHouseCleaningToRoom(DBProject esql){
