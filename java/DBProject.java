@@ -312,7 +312,7 @@ public class DBProject {
          String query = "INSERT INTO Customer (customerID, fName, lName";
 
          //get user inputs
-         System.out.print("\tEnter First Name: ");
+         System.out.print("\t*Enter First Name: ");
          String input = in.readLine();
          while(input.length() == 0) {
             // if user didn't input something but just enter
@@ -321,7 +321,7 @@ public class DBProject {
          }
          String fname = input;
 
-         System.out.print("\tEnter Last Name: ");
+         System.out.print("\t*Enter Last Name: ");
          input = in.readLine();
          while(input.length() == 0) {
             // if user didn't input something but just enter
@@ -415,7 +415,79 @@ public class DBProject {
 
    public static void addMaintenanceCompany(DBProject esql){
       // Given maintenance Company details add the maintenance company in the DB
+      boolean address_inserted = false;
+      boolean certified_inserted = false;
+      int new_id = 0;
       
+      try{
+        String query = "SELECT count(*) FROM MaintenanceCompany";
+        new_id = esql.getCountByExecute(query); // sets new customer's id
+      } catch (Exception e) {
+        System.err.println(e.getMessage());
+      }
+
+       // set values and insert a new one
+      try{
+         String query = "INSERT INTO MaintenanceCompany (cmpID, name";
+
+         //get user inputs
+         System.out.print("\t*Enter Name: ");
+         String input = in.readLine();
+         while(input.length() == 0) {
+            // if user didn't input something but just enter
+            System.out.print("\tName cannot be null! Try again: ");
+            input = in.readLine();
+         }
+         String name = input;
+
+         System.out.print("\tEnter Address: ");
+         input = in.readLine();
+         String address = "";
+         if(input.length() != 0) {
+            // if user insert address
+            address_inserted = true;
+            address = input;
+         }
+
+         System.out.print("\t*Is this company certified?(true/false): ");
+         String certified = "";
+         while(!certified_inserted) {
+            input = in.readLine();
+            if(input.length() == 0) {
+                // if user didn't input something but just enter
+                System.out.print("\tAnswer of this question cannot be null! Try again: ");
+                continue;
+            }
+            input = input.toUpperCase();
+            if(!(input.equals("TRUE") || input.equals("FALSE"))) {
+                // if user inserted invalid answer
+                System.out.print("\tInvalid Answer! Try again: ");
+            }
+            else {
+                certified = input;
+                certified_inserted = true;
+            }
+         }
+
+         // make query statement
+         if(address_inserted) {
+            query += ", Address";
+         }
+         query += (", isCertified) VALUES (" + Integer.toString(new_id) + ", '" + name + "'");
+
+         if(address_inserted) {
+            query += (",'" + address + "'");
+         }
+         query += (", " + certified + ")");
+
+         System.out.println("Query made is: " + query);
+         System.out.print("Executing query...");
+         esql.executeUpdate(query);
+         System.out.println("Completed");
+
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }
    }//end addMaintenanceCompany
 
    public static void addRepair(DBProject esql){
