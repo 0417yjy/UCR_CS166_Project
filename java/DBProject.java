@@ -25,6 +25,11 @@ import java.io.InputStreamReader;
 import java.util.Random; // for making price
 import java.util.StringTokenizer; // for get id by given name
 
+// to get today's date
+import java.util.Date; 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 /**
  * This class defines a simple embedded SQL utility class that is designed to
  * work with PostgreSQL JDBC drivers.
@@ -93,6 +98,10 @@ public class DBProject {
     return result;
   }
 
+  /**
+   * Used for custom query of additional function 17 for testing
+   * print the query's result
+   */
   public static void executeCustom(DBProject esql) {
       try {
         System.out.print("\tEnter your query (SELECT only): ");
@@ -103,49 +112,86 @@ public class DBProject {
       }
    }
 
-   public int getIdByName(String fullname, String relation) throws SQLException {
-    StringTokenizer st = new StringTokenizer(fullname);
-    String query = "";
-    // make initial query
-    switch(relation) {
-        case "Customer":
-        query = "SELECT customerID FROM Customer WHERE fName = '";
-        break;
+   /**
+   * Get ID by name(Customer or Staff) or SSN(Staff)
+   * If find the searching one, return the id. Otherwise, return -1 as a mark of fail
+   * 
+   * @param mod Search by name if the mod is 1 / Search by the ssn if the mod is 2
+   * @param name_or_ssn Searching is processed with this variable
+   * @param relation Indicates which relation to search
+   * @throws java.sql.SQLException when failed to execute the query
+   */
+   public int getID(int mod, String name_or_ssn, String relation) throws SQLException {
+    if(mod == 1) {
+        StringTokenizer st = new StringTokenizer(name_or_ssn);
+        String query = "";
+        // make initial query
+        switch(relation) {
+            case "Customer":
+            query = "SELECT customerID FROM Customer WHERE fName = '";
+            break;
 
-        case "Staff":
-        query = "SELECT employerID FROM Staff WHERE fname = '";
-        break;
+            case "Staff":
+            query = "SELECT employerID FROM Staff WHERE fname = '";
+            break;
 
-        default:
-        System.out.println("Couldn't find the relation!");
-        return -1;
+            default:
+            System.out.println("Couldn't find the relation!");
+            return -1;
+        }
+
+        // get fname and lname
+        if(!st.hasMoreTokens()) {
+         return -1; // If there is no token, invalid name
+        }
+        String fname = st.nextToken();
+        if(!st.hasMoreTokens()) {
+         return -1; // if there is no token, invalid name
+        }
+        String lname = st.nextToken();
+
+        if(st.hasMoreTokens()) {
+            return -1; //if there are tokens available, invalid name
+        }
+
+        // complete query
+        query += (fname + "' AND lname = '" + lname + "'");
+        System.out.println("Query made is: " + query);
+        
+        // creates a statement object
+        Statement stmt = this._connection.createStatement();
+        // issues the update instruction
+        ResultSet rs =  stmt.executeQuery(query);
+        rs.next();
+        int result = rs.getInt(1);
+        return result;
+        }
+    else if(mod == 2) {
+        // make query
+        String query = "SELECT employerID FROM Staff WHERE SSN = " + name_or_ssn;
+        //System.out.println("Query made is: " + query);
+
+        // creates a statement object
+        Statement stmt = this._connection.createStatement();
+        // issues the update instruction
+        ResultSet rs =  stmt.executeQuery(query);
+        rs.next();
+        int result = rs.getInt(1);
+        return result;
     }
+    return -1;
+   }
 
-    // get fname and lname
-    if(!st.hasMoreTokens()) {
-     return -1; // If there is no token, invalid name
-    }
-    String fname = st.nextToken();
-    if(!st.hasMoreTokens()) {
-     return -1; // if there is no token, invalid name
-    }
-    String lname = st.nextToken();
+   public int getNewID(String relation) {
+        int new_id = 0;
 
-    if(st.hasMoreTokens()) {
-        return -1; //if there are tokens available, invalid name
-    }
-
-    // complete query
-    query += (fname + "' AND lname = '" + lname + "'");
-    System.out.println("Query made is: " + query);
-    
-    // creates a statement object
-    Statement stmt = this._connection.createStatement();
-    // issues the update instruction
-    ResultSet rs =  stmt.executeQuery(query);
-    rs.next();
-    int result = rs.getInt(1);
-    return result;
+        try {
+            String query = "SELECT count(*) FROM " + relation;
+            new_id = this.getCountByExecute(query); // sets new customer's id
+        } catch(SQLException e) {
+            e.getMessage();
+        }
+        return new_id;
    }
 /*********** Newly defined methods ends here ***********/
 
@@ -345,14 +391,7 @@ public class DBProject {
       boolean phno_inserted = false;
       boolean dob_inserted = false;
       boolean gender_inserted = false;
-      int new_id = 0;
-
-      try{
-        String query = "SELECT count(*) FROM Customer";
-        new_id = esql.getCountByExecute(query); // sets new customer's id
-      } catch (Exception e) {
-        System.err.println(e.getMessage());
-      }
+      int new_id = esql.getNewID("Customer");
     
       // set values and insert a new one
       try{
@@ -464,14 +503,7 @@ public class DBProject {
       // Given maintenance Company details add the maintenance company in the DB
       boolean address_inserted = false;
       boolean certified_inserted = false;
-      int new_id = 0;
-      
-      try{
-        String query = "SELECT count(*) FROM MaintenanceCompany";
-        new_id = esql.getCountByExecute(query); // sets new customer's id
-      } catch (Exception e) {
-        System.err.println(e.getMessage());
-      }
+      int new_id = esql.getNewID("MaintenanceCompany");
 
        // set values and insert a new one
       try{
@@ -548,14 +580,7 @@ public class DBProject {
       // Given hotelID, roomNo and customer Name create a booking in the DB 
         boolean valid_name = false;
         int customer_id = 0;
-        int new_id = 0;
-
-        try{
-            String query = "SELECT count(*) FROM Booking";
-            new_id = esql.getCountByExecute(query); // sets new customer's id
-          } catch (Exception e) {
-            System.err.println(e.getMessage());
-          }
+        int new_id = esql.getNewID("Booking");
 
         // set values and insert a new one
       try{
@@ -571,7 +596,7 @@ public class DBProject {
         }
         String hotelID = input;
 
-        System.out.print("\tEnter RoomNo: ");
+        System.out.print("\t*Enter RoomNo: ");
         input = in.readLine();
         while(input.length() == 0) {
             // if user didn't input something but just enter
@@ -580,14 +605,14 @@ public class DBProject {
         }
         String RoomNo = input;
 
-        System.out.print("\tEnter Customer's Name([fname] [lname]): ");
+        System.out.print("\t*Enter Customer's Name([fname] [lname]): ");
         while(!valid_name) {
             input = in.readLine();
             if(input.length() == 0) {
                 // if user didn't input something but just enter
                 System.out.print("\tYou must enter name! Try again: ");
              }
-            customer_id = esql.getIdByName(input, "Customer");
+            customer_id = esql.getID(1, input, "Customer");
             if(customer_id == -1) {
                 // searching customer failed
                 System.out.print("\tInvalid name! Try again: ");
@@ -598,7 +623,7 @@ public class DBProject {
             }
         }
 
-        System.out.print("\tEnter Booking Date(dd/mm/yyyy): ");
+        System.out.print("\t*Enter Booking Date(dd/mm/yyyy): ");
         input = in.readLine();
         while(input.length() == 0) {
             // if user didn't input something but just enter
@@ -680,9 +705,123 @@ public class DBProject {
    
    public static void repairRequest(DBProject esql){
 	  // Given a hotelID, Staff SSN, roomNo, repairID , date create a repair request in the DB
-      // Your code goes here.
-      // ...
-      // ...
+      int new_id = esql.getNewID("Request");
+      boolean description_inserted = false;
+      boolean rptype_inserted = false;
+
+      // set values and insert a new one
+      try{
+        String rq_query = "INSERT INTO Request (reqID, managerID, repairID, requestDate";
+        String rp_query = "INSERT INTO Repair (rID, hotelID, roomNo, mCompany, repairDate";
+
+        //get user inputs
+        System.out.print("\t*Enter HotelID: ");
+        String input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tHotelID cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String hotelID = input;
+
+        System.out.print("\t*Enter Manager's SSN: ");
+        input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tSSN cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String m_SSN = input;
+        //get manager's id
+        int m_id = esql.getID(2, input, "Staff");
+
+        System.out.print("\t*Enter Room No: ");
+        input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tRoom No cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String roomNo = input;
+
+        System.out.print("\t*Enter Repair Date(mm/dd/yyyy): ");
+        input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tRepair Date cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String rp_date = input;
+
+        System.out.print("\t*Enter Maintenance Company ID: ");
+        input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tMaintenance Company ID cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String mc_id = input;
+
+        System.out.print("\tEnter Description: ");
+         input = in.readLine();
+         String description = "";
+         if(input.length() != 0) {
+            // if user insert address
+            description_inserted = true;
+            description = input;
+        }
+
+        System.out.print("\tEnter Repair Type(Small / Medium / Large): ");
+         input = in.readLine();
+         String rptype = "";
+         if(input.length() != 0) {
+            // if user insert address
+            rptype_inserted = true;
+            rptype = input;
+        }
+
+        // complete repair insert query
+        if(description_inserted) {
+            rp_query += ", description";
+        }
+        if(rptype_inserted) {
+            rp_query += ", repairType";
+        }
+        rp_query += (") VALUES (" + Integer.toString(new_id) + ", " + hotelID + ", " + roomNo + ", " + mc_id + ", '" + rp_date + "'");
+        if(description_inserted) {
+            rp_query += ", '" + description + "'";
+        }
+        if(rptype_inserted) {
+            rp_query += ", '" + rptype + "'";
+        }
+        rp_query += ")";
+
+        // insert into repair relation
+        System.out.println("Query made is: " + rp_query);
+        System.out.print("Executing query...");
+        esql.executeUpdate(rp_query);
+        System.out.println("Completed");
+
+        // complete request insert query
+        DateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
+        Date date = new Date(); // to get today's date
+        if(description_inserted) {
+            rq_query += ", description";
+        }
+        rq_query += ") VALUES (" + Integer.toString(new_id) + ", " + Integer.toString(m_id) + ", " + Integer.toString(new_id) + ", '" + dateformat.format(date) + "'";
+        if(description_inserted) {
+            rq_query += ", '" + description + "'";
+        }
+        rq_query += ")";
+
+        // insert into request relation
+        System.out.println("Query made is: " + rq_query);
+        System.out.print("Executing query...");
+        esql.executeUpdate(rq_query);
+        System.out.println("Completed");
+    } catch(Exception e){
+        System.err.println (e.getMessage());
+    }
    }//end repairRequest
    
    public static void numberOfAvailableRooms(DBProject esql){
