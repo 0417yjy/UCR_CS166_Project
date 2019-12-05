@@ -833,9 +833,28 @@ public class DBProject {
    
    public static void numberOfBookedRooms(DBProject esql){
 	  // Given a hotelID, get the count of rooms booked
-      // Your code goes here.
-      // ...
-      // ...
+      try{
+        String query = "SELECT COUNT(*) FROM Booking WHERE hotelID = ";
+
+        //get user inputs
+        System.out.print("\t*Enter HotelID: ");
+        String input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tHotelID cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String hotelID = input;
+
+        DateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
+        Date date = new Date(); // to get today's date
+
+        query += hotelID + ", bookingDate = '" + dateformat.format(date) + "'";
+        int rowCount = esql.executeQuery(query);
+        System.out.println("total row(s): " + rowCount);
+    } catch (Exception e) {
+        System.err.println (e.getMessage());
+    }
    }//end numberOfBookedRooms
    
    public static void listHotelRoomBookingsForAWeek(DBProject esql){
