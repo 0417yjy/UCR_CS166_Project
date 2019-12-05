@@ -103,49 +103,66 @@ public class DBProject {
       }
    }
 
-   public int getIdByName(String fullname, String relation) throws SQLException {
-    StringTokenizer st = new StringTokenizer(fullname);
-    String query = "";
-    // make initial query
-    switch(relation) {
-        case "Customer":
-        query = "SELECT customerID FROM Customer WHERE fName = '";
-        break;
+   public int getId(int mod, String name_or_ssn, String relation) throws SQLException {
+    if(mod == 1) {
+        StringTokenizer st = new StringTokenizer(name_or_ssn);
+        String query = "";
+        // make initial query
+        switch(relation) {
+            case "Customer":
+            query = "SELECT customerID FROM Customer WHERE fName = '";
+            break;
 
-        case "Staff":
-        query = "SELECT employerID FROM Staff WHERE fname = '";
-        break;
+            case "Staff":
+            query = "SELECT employerID FROM Staff WHERE fname = '";
+            break;
 
-        default:
-        System.out.println("Couldn't find the relation!");
-        return -1;
+            default:
+            System.out.println("Couldn't find the relation!");
+            return -1;
+        }
+
+        // get fname and lname
+        if(!st.hasMoreTokens()) {
+         return -1; // If there is no token, invalid name
+        }
+        String fname = st.nextToken();
+        if(!st.hasMoreTokens()) {
+         return -1; // if there is no token, invalid name
+        }
+        String lname = st.nextToken();
+
+        if(st.hasMoreTokens()) {
+            return -1; //if there are tokens available, invalid name
+        }
+
+        // complete query
+        query += (fname + "' AND lname = '" + lname + "'");
+        System.out.println("Query made is: " + query);
+        
+        // creates a statement object
+        Statement stmt = this._connection.createStatement();
+        // issues the update instruction
+        ResultSet rs =  stmt.executeQuery(query);
+        rs.next();
+        int result = rs.getInt(1);
+        return result;
+        }
+    else if(mod == 2) {
+
     }
+   }
 
-    // get fname and lname
-    if(!st.hasMoreTokens()) {
-     return -1; // If there is no token, invalid name
-    }
-    String fname = st.nextToken();
-    if(!st.hasMoreTokens()) {
-     return -1; // if there is no token, invalid name
-    }
-    String lname = st.nextToken();
+   public int getNewID(String relation) {
+        int new_id = 0;
 
-    if(st.hasMoreTokens()) {
-        return -1; //if there are tokens available, invalid name
-    }
-
-    // complete query
-    query += (fname + "' AND lname = '" + lname + "'");
-    System.out.println("Query made is: " + query);
-    
-    // creates a statement object
-    Statement stmt = this._connection.createStatement();
-    // issues the update instruction
-    ResultSet rs =  stmt.executeQuery(query);
-    rs.next();
-    int result = rs.getInt(1);
-    return result;
+        try {
+            String query = "SELECT count(*) FROM " + relation;
+            new_id = this.getCountByExecute(query); // sets new customer's id
+        } catch(SQLException e) {
+            e.getMessage();
+        }
+        return new_id;
    }
 /*********** Newly defined methods ends here ***********/
 
@@ -345,14 +362,7 @@ public class DBProject {
       boolean phno_inserted = false;
       boolean dob_inserted = false;
       boolean gender_inserted = false;
-      int new_id = 0;
-
-      try{
-        String query = "SELECT count(*) FROM Customer";
-        new_id = esql.getCountByExecute(query); // sets new customer's id
-      } catch (Exception e) {
-        System.err.println(e.getMessage());
-      }
+      int new_id = esql.getNewID("Customer");
     
       // set values and insert a new one
       try{
@@ -464,14 +474,7 @@ public class DBProject {
       // Given maintenance Company details add the maintenance company in the DB
       boolean address_inserted = false;
       boolean certified_inserted = false;
-      int new_id = 0;
-      
-      try{
-        String query = "SELECT count(*) FROM MaintenanceCompany";
-        new_id = esql.getCountByExecute(query); // sets new customer's id
-      } catch (Exception e) {
-        System.err.println(e.getMessage());
-      }
+      int new_id = esql.getNewID("MaintenanceCompany");
 
        // set values and insert a new one
       try{
@@ -548,14 +551,7 @@ public class DBProject {
       // Given hotelID, roomNo and customer Name create a booking in the DB 
         boolean valid_name = false;
         int customer_id = 0;
-        int new_id = 0;
-
-        try{
-            String query = "SELECT count(*) FROM Booking";
-            new_id = esql.getCountByExecute(query); // sets new customer's id
-          } catch (Exception e) {
-            System.err.println(e.getMessage());
-          }
+        int new_id = esql.getNewID("Booking");
 
         // set values and insert a new one
       try{
@@ -680,9 +676,34 @@ public class DBProject {
    
    public static void repairRequest(DBProject esql){
 	  // Given a hotelID, Staff SSN, roomNo, repairID , date create a repair request in the DB
-      // Your code goes here.
-      // ...
-      // ...
+      int new_id = getNewID("Request");
+
+      // set values and insert a new one
+      try{
+        String rq_query = "INSERT INTO Request (reqID, managerID, repairID, requestDate";
+        String rp_query = "INSERT INTO Repair (rID, hotelID, roomNo, mCompany, repairDate";
+
+        //get user inputs
+        System.out.print("\t*Enter HotelID: ");
+        String input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tHotelID cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String hotelID = input;
+
+        System.out.print("\t*Enter Manager's SSN: ");
+        input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tSSN cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String m_SSN = input;
+        //get manager's id
+
+
    }//end repairRequest
    
    public static void numberOfAvailableRooms(DBProject esql){
