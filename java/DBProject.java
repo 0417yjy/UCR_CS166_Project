@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Random; // for making price
+import java.util.StringTokenizer; // for get id by given name
 
 /**
  * This class defines a simple embedded SQL utility class that is designed to
@@ -100,7 +102,52 @@ public class DBProject {
         System.err.println(e.getMessage());
       }
    }
-/*********** Newly defined methods start from here ***********/
+
+   public int getIdByName(String fullname, String relation) throws SQLException {
+    StringTokenizer st = new StringTokenizer(fullname);
+    String query = "";
+    // make initial query
+    switch(relation) {
+        case "Customer":
+        query = "SELECT customerID FROM Customer WHERE fName = '";
+        break;
+
+        case "Staff":
+        query = "SELECT employerID FROM Staff WHERE fname = '";
+        break;
+
+        default:
+        System.out.println("Couldn't find the relation!");
+        return -1;
+    }
+
+    // get fname and lname
+    if(!st.hasMoreTokens()) {
+     return -1; // If there is no token, invalid name
+    }
+    String fname = st.nextToken();
+    if(!st.hasMoreTokens()) {
+     return -1; // if there is no token, invalid name
+    }
+    String lname = st.nextToken();
+
+    if(st.hasMoreTokens()) {
+        return -1; //if there are tokens available, invalid name
+    }
+
+    // complete query
+    query += (fname + "' AND lname = '" + lname + "'");
+    System.out.println("Query made is: " + query);
+    
+    // creates a statement object
+    Statement stmt = this._connection.createStatement();
+    // issues the update instruction
+    ResultSet rs =  stmt.executeQuery(query);
+    rs.next();
+    int result = rs.getInt(1);
+    return result;
+   }
+/*********** Newly defined methods ends here ***********/
 
    /**
     * Method to execute an update SQL statement.  Update SQL instructions
@@ -224,7 +271,7 @@ public class DBProject {
 				System.out.println("14. List the repairs made by maintenance company");
 				System.out.println("15. Get top k maintenance companies based on repair count");
 				System.out.println("16. Get number of repairs occurred per year for a given hotel room");
-            System.out.println("17. Custom Query");
+                System.out.println("17. Custom Query");
 				System.out.println("18. < EXIT");
 
             switch (readChoice()){
@@ -499,7 +546,129 @@ public class DBProject {
 
    public static void bookRoom(DBProject esql){
       // Given hotelID, roomNo and customer Name create a booking in the DB 
-        
+        boolean valid_name = false;
+        int customer_id = 0;
+        int new_id = 0;
+
+        try{
+            String query = "SELECT count(*) FROM Booking";
+            new_id = esql.getCountByExecute(query); // sets new customer's id
+          } catch (Exception e) {
+            System.err.println(e.getMessage());
+          }
+
+        // set values and insert a new one
+      try{
+        String query = "INSERT INTO Booking (bID, customer, hotelID, roomNo, bookingDate, noOfPeople, price) VALUES (";
+
+        //get user inputs
+        System.out.print("\t*Enter HotelID: ");
+        String input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tHotelID cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String hotelID = input;
+
+        System.out.print("\tEnter RoomNo: ");
+        input = in.readLine();
+        while(input.length() == 0) {
+            // if user didn't input something but just enter
+            System.out.print("\tRoomNo cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String RoomNo = input;
+
+        System.out.print("\tEnter Customer's Name([fname] [lname]): ");
+        while(!valid_name) {
+            input = in.readLine();
+            if(input.length() == 0) {
+                // if user didn't input something but just enter
+                System.out.print("\tYou must enter name! Try again: ");
+             }
+            customer_id = esql.getIdByName(input, "Customer");
+            if(customer_id == -1) {
+                // searching customer failed
+                System.out.print("\tInvalid name! Try again: ");
+            }
+            else {
+                // found customer id. go to the next step
+                valid_name = true;
+            }
+        }
+
+        System.out.print("\tEnter Booking Date(dd/mm/yyyy): ");
+        input = in.readLine();
+        while(input.length() == 0) {
+            // if user didn't input something but just enter
+            System.out.print("\tBooking Date cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String bookingDate = input;
+
+        System.out.print("\tEnter Number of booking people (if null, 1 will be inserted): ");
+        input = in.readLine();
+        int num_of_people = 0;
+        if(input.length() == 0) {
+            // if user didn't input something but just enter
+            // set 1
+            num_of_people = 1;
+        }
+        else {
+            try {
+                num_of_people = Integer.parseInt(input);
+            }
+            catch(NumberFormatException e) {
+                System.out.println("Failed to get number from your input! Number of booking people will be 1..");
+                num_of_people = 1;
+            }
+        }
+
+        // calculate price
+        // there is a room type, need to calculate how cost per each type
+        int price = 0; // not yet implemented
+        String roomType;
+        // creates a statement object
+        Statement stmt = esql._connection.createStatement();
+         // issues the update instruction
+        ResultSet rs =  stmt.executeQuery("SELECT roomType FROM Room Where hotelID = " + hotelID + " AND roomNo = " + RoomNo);
+        // gets the result of count
+        rs.next();
+        roomType = rs.getString(1);
+        // close the instruction
+        stmt.close();
+
+        Random r = new Random();
+        switch(roomType) {
+            case "Economy":
+            price = r.nextInt(500) + 500; // get a random number in range [500, 999]
+            break;
+
+            case "Suite":
+            price = r.nextInt(500) + 1000; // get a random number in range [1000, 1499]
+            break;
+
+            case "Deluxe":
+            price = r.nextInt(500) + 1500; // get a random number in range [1500, 1999]
+            break;
+
+            default:
+            System.out.println("No match! Set the price 1999...");
+            price = 1999;
+            break;
+        }
+
+        // make query statement
+        query += (Integer.toString(new_id) + ", " + Integer.toString(customer_id) + ", " + hotelID + ", " + RoomNo + ", '" + bookingDate + "', " + Integer.toString(num_of_people) + ", " + Integer.toString(price) + ")");
+
+        System.out.println("Query made is: " + query);
+        System.out.print("Executing query...");
+        esql.executeUpdate(query);
+        System.out.println("Completed");
+     }catch(Exception e){
+        System.err.println (e.getMessage());
+     }
    }//end bookRoom
 
    public static void assignHouseCleaningToRoom(DBProject esql){
