@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Random; // for making price
+import java.tuil.StringTokenizer; // for get id by given name
 
 /**
  * This class defines a simple embedded SQL utility class that is designed to
@@ -100,7 +102,52 @@ public class DBProject {
         System.err.println(e.getMessage());
       }
    }
-/*********** Newly defined methods start from here ***********/
+
+   public static int getIdByName(String fullname, String relation) {
+    StringTokenizer st = new StringTokenizer(fullname);
+    String query = "";
+    // make initial query
+    switch(relation) {
+        case "Customer":
+        query = "SELECT customerID FROM Customer WHERE fName = ";
+        break;
+
+        case "Staff":
+        query = "SELECT employerID FROM Staff WHERE fname = ";
+        break;
+
+        default:
+        System.out.println("Couldn't find the relation!");
+        return -1;
+        break;
+    }
+
+    // get fname and lname
+    if(!st.hasMoreTokens()) {
+     return -1; // If there is no token, invalid name
+    }
+    String fname = st.nextToken();
+    if(!st.hasMoreTokens()) {
+     return -1; // if there is no token, invalid name
+    }
+    String lname = st.nextToken();
+
+    if(st.hasMoreTokens()) {
+        return -1; //if there are tokens available, invalid name
+    }
+
+    // complete query
+    query += (fname + " AND lname = " + lname);
+
+    // creates a statement object
+    Statement stmt = this._connection.createStatement();
+    // issues the update instruction
+    ResultSet rs =  stmt.executeQuery(query);
+    rs.next();
+    int result = rs.getInt(1);
+    return result;
+   }
+/*********** Newly defined methods ends here ***********/
 
    /**
     * Method to execute an update SQL statement.  Update SQL instructions
@@ -224,7 +271,7 @@ public class DBProject {
 				System.out.println("14. List the repairs made by maintenance company");
 				System.out.println("15. Get top k maintenance companies based on repair count");
 				System.out.println("16. Get number of repairs occurred per year for a given hotel room");
-            System.out.println("17. Custom Query");
+                System.out.println("17. Custom Query");
 				System.out.println("18. < EXIT");
 
             switch (readChoice()){
@@ -582,6 +629,36 @@ public class DBProject {
         // calculate price
         // there is a room type, need to calculate how cost per each type
         int price = 0; // not yet implemented
+        String roomType;
+        // creates a statement object
+        Statement stmt = this._connection.createStatement();
+         // issues the update instruction
+        ResultSet rs =  stmt.executeQuery("SELECT roomType FROM Room Where hotelID = " + hotelID + " AND roomNo = " + RoomNo);
+        // gets the result of count
+        rs.next();
+        roomType = rs.getString(1);
+        // close the instruction
+        stmt.close();
+
+        Random r = new Random();
+        switch(roomType) {
+            case "Economy":
+            price = r.nextInt(500) + 500; // get a random number in range [500, 999]
+            break;
+
+            case "Suite":
+            price = r.nextInt(500) + 1000; // get a random number in range [1000, 1499]
+            break;
+
+            case "Deluxe":
+            price = r.nextInt(500) + 1500; // get a random number in range [1500, 1999]
+            break;
+
+            default:
+            System.out.println("No match! Set the price 1999...");
+            price = 1999;
+            break;
+        }
 
         // make query statement
         query += (Integer.toString(new_id) + ", " + Integer.toString(customer_id) + ", " + hotelID + ", " + RoomNo + ", ''" + bookingDate + "', " + Integer.toString(num_of_people) + ", " + Integer.toString(price));
@@ -590,7 +667,6 @@ public class DBProject {
         System.out.print("Executing query...");
         esql.executeUpdate(query);
         System.out.println("Completed");
-
      }catch(Exception e){
         System.err.println (e.getMessage());
      }
