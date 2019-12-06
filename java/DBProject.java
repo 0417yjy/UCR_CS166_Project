@@ -113,10 +113,10 @@ public class DBProject {
    }
 
    /**
-   * Get ID by name(Customer or Staff) or SSN(Staff)
+   * Get ID by name(Customer or Staff or MaintenanceCompany) or SSN(Staff)
    * If find the searching one, return the id. Otherwise, return -1 as a mark of fail
    * 
-   * @param mod Search by name if the mod is 1 / Search by the ssn if the mod is 2
+   * @param mod Search by name if the mod is 1 / Search by the ssn if the mod is 2 / Search by company name if the mod is 3
    * @param name_or_ssn Searching is processed with this variable
    * @param relation Indicates which relation to search
    * @throws java.sql.SQLException when failed to execute the query
@@ -178,6 +178,18 @@ public class DBProject {
         rs.next();
         int result = rs.getInt(1);
         return result;
+    }
+    else if(mod == 3) {
+       //make query
+       String query = "SELECT cmpID FROM MaintenanceCompany WHERE name = '" + name_or_ssn + "'";
+
+       // creates a statement object
+       Statement stmt = this._connection.createStatement();
+       // issues the update instruction
+       ResultSet rs =  stmt.executeQuery(query);
+       rs.next();
+       int result = rs.getInt(1);
+       return result;
     }
     return -1;
    }
@@ -1101,9 +1113,25 @@ public class DBProject {
    
    public static void listRepairsMade(DBProject esql){
 	  // Given a Maintenance company name list all the repairs along with repairType, hotelID and roomNo
-      // Your code goes here.
-      // ...
-      // ...
+     try {
+      System.out.print("\t*Enter Maintenance Company's Name: ");
+      String input = in.readLine();
+      while(input.length() == 0) {
+         // if user didn't input something but just enter
+         System.out.print("\tCompany's name cannot be null! Try again: ");
+         input = in.readLine();
+      }
+      String company_name = input;
+      //get company's id
+      int cmp_id = esql.getID(3, input, "MaintenanceCompany");
+
+      String query = "SELECT rID as repair_id, hotelID, roomNo, repairType FROM Repair WHERE mCompany = " + Integer.toString(cmp_id);
+      System.out.println("Query made is: " + query);
+      int rowCount = esql.executeQuery(query);
+      System.out.println("total row(s): " + rowCount);
+     } catch (Exception e) {
+        System.err.println(e.getMessage());
+     }
    }//end listRepairsMade
    
    public static void topKMaintenanceCompany(DBProject esql){
@@ -1158,7 +1186,7 @@ public class DBProject {
       String roomNo = input;
       
       String query = "SELECT TO_CHAR(repairDate, 'YYYY') as year, COUNT(*) as num_of_repairs FROM Repair WHERE hotelID = " + hotelID + " AND roomNo = " + roomNo + " GROUP BY year";
-      System.out.println("Query made is: " + query);
+      //System.out.println("Query made is: " + query);
       int rowCount = esql.executeQuery(query);
       System.out.println("total row(s): " + rowCount);
       
