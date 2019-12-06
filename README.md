@@ -17,8 +17,15 @@
 ## Instructions
 
 1. Run postgresql .sh files to setup your DB
-2. Copy data file to DB temp folder before you run create.sql, else the data will not be inserting in the tables.
-3. Run compile.sh, to start your java program
+	1. source ./postgresql/startPostgreSQL.sh
+	2. source ./createPostgreDB.sh
+2. Copy data file to DB temp folder
+	1. cp data/*.csv /tmp/$USER/myDB/data/
+3.  Create relation table
+	1. psql -h localhost -p $PGPORT $USER"_DB" < sql/create.sql
+4. Run compile.sh, to start your java program
+	1. cd java
+	2. source ./compile.sh
 
 ## Grades
 
@@ -49,10 +56,6 @@
 	* Given a maintenance company ID, list the type of repair, the hotel, and the room number for all repairs made by that company. - FCT 17
 	* For a given date range, list all the requests received by the maintenance company from a particular hotel manager ID.
 
-
-## Assumptions
-
-* When user ask for available room, he/she is asking about current date.
 
 
 ## TEAM
