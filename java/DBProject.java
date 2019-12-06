@@ -312,7 +312,6 @@ public class DBProject {
          boolean keepon = true;
          while(keepon) {
             // These are sample SQL statements
-
             System.out.println("------------------------------------------------------------------------");
 				    System.out.println("                              MAIN MENU                              ");
 				    System.out.println("------------------------------------------------------------------------");
@@ -368,12 +367,13 @@ public class DBProject {
 				   case 14: totalCostForCustomer(esql); break;
                    case 15: listStaffDetail(esql); break; // newly defined method
                    case 16: getRequestDetailFromManager(esql); break; // newly defined method
-				   case 17: topKHighestPriceBookingsForACustomer(esql); break;
-				   case 18: listRepairsMade(esql); break;
-				   case 19: topKMaintenanceCompany(esql); break;
-				   case 20: numberOfRepairsForEachRoomPerYear(esql); break;
-                   case 21: executeCustom(esql); break;
-				   case 22: keepon = false; break;
+                   case 17: listRoomForCleaningStaff(esql); break; // newly defined method
+				   case 18: topKHighestPriceBookingsForACustomer(esql); break;
+				   case 19: listRepairsMade(esql); break;
+				   case 20: topKMaintenanceCompany(esql); break;
+				   case 21: numberOfRepairsForEachRoomPerYear(esql); break;
+                   case 22: executeCustom(esql); break;
+				   case 23: keepon = false; break;
 				   default : System.out.println("Unrecognized choice!"); break;
             }//end switch
          }//end while
@@ -1359,16 +1359,6 @@ public class DBProject {
         }
         String ManagerID = input;
 
-        /*// get hotelID
-        Statement stmt = esql._connection.createStatement();
-        // issues the update instruction
-        ResultSet rs =  stmt.executeQuery("SELECT hotelID FROM Hotel Where manager = " + ManagerID);
-        // gets the result of count
-        rs.next();
-        roomType = rs.getString(1);
-        // close the instruction
-        stmt.close();*/
-
         // get repairID
         Statement stmt = esql._connection.createStatement();
         // issues the update instruction
@@ -1385,6 +1375,37 @@ public class DBProject {
         int rowCount = esql.executeQuery(query);
         System.out.println("total row(s): " + rowCount);        
 
+    } catch (Exception e) {
+        System.err.println(e.getMessage());
+    }
+   }
+
+   public static void listRoomForCleaningStaff(DBProject esql) {
+    // Given a hotelId and house cleaning staff ID list all the rooms he/she is assigned to
+    try {
+        System.out.print("\t*Enter HotelID: ");
+        String input = in.readLine();
+        while(input.length() == 0) {
+            //if user didn't input something but just enter
+            System.out.print("\tHotelID cannot be null! Try again:");
+            input = in.readLine();
+        }
+        String hotelID = input;
+
+        System.out.print("\t*Enter staffID: ");
+        input = in.readLine();
+        while(input.length() == 0) {
+            //if user didn't input something but just enter
+            System.out.print("\tstaffID cannot be null! Try again:");
+            input = in.readLine();
+        }
+        String staffID = input;
+
+        // make query
+        String query = "SELECT roomNo FROM Assigned WHERE hotelID = " + hotelID + " AND staffID = " + staffID;
+        //System.out.println("Query made is: " + query);
+        int rowCount = esql.executeQuery(query);
+        System.out.println("total row(s): " + rowCount);
     } catch (Exception e) {
         System.err.println(e.getMessage());
     }
