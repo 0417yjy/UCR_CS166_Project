@@ -251,7 +251,7 @@ public class DBProject {
 
       // iterates through the result set and output them to standard out.
       boolean outputHeader = true;
-      /*while (rs.next()){
+      while (rs.next()){
 	      if(outputHeader){
 	         for(int i = 1; i <= numCol; i++){
 		         System.out.print(rsmd.getColumnName(i) + "\t");
@@ -263,25 +263,7 @@ public class DBProject {
             System.out.print (rs.getString (i) + "\t");
          System.out.println ();
          ++rowCount;
-      }//end while*/
-
-      // Print header
-      for(int i=1;i<=numCol;i++) {
-         if(i > 1)
-            System.out.print(" | ");
-         System.out.print(rsmd.getColumnName(i));
-      }
-      System.out.println ();
-
-      while(rs.next()) {
-         for(int i=1;i<=numCol;i++) {
-            if(i > 1)
-               System.out.print(" | ");
-            System.out.print(rs.getString(i));
-         }
-         System.out.println ();
-         ++rowCount;
-      }
+      }//end while
       stmt.close ();
       return rowCount;
    }//end executeQuery
