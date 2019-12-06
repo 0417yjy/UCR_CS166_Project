@@ -1073,7 +1073,7 @@ public class DBProject {
         }
 
         System.out.print("\t*Enter Start date for search(mm/dd/yyyy): ");
-        String input = in.readLine();
+        input = in.readLine();
         while(input.length() == 0) {
            // if user didn't input something but just enter
            System.out.print("\tDate cannot be null! Try again: ");
@@ -1094,6 +1094,8 @@ public class DBProject {
         System.out.println("Query made is: " + query);
         int rowCount = esql.executeQuery(query);
         System.out.println("total row(s): " + rowCount);
+    } catch (Exception e) {
+        System.err.println (e.getMessage());
     }
    }//end totalCostForCustomer
    
