@@ -39,14 +39,14 @@
 * **Hotel Staff**:
 	* Given a Hotel ID, list all details pertaining to staff, including their positions/roles (Hotel Managers, Receptionists, House cleaning, etc.) who are employed by that hotel. - FCT 15
 	* Hotel Managers may make maintenance/room repair requests, which will be handled by a maintenance company. The maintenance company must be certified to handle that specific type of repair. - FCT 7
-	* Given a manager ID list the hotel ID, room number and date of request.
+	* Given a manager ID list the hotel ID, room number and date of request. - FCT 16
 	* Given a hotel ID and House cleaning staff ID list all the rooms he/she is assigned to.
 * **Customers**:
 	* Given customer ID, list all the rooms previously booked by that customer in all the hotels.
 	* Given a price and a data range, list all the available rooms in all hotels for that date range, and price at or below the specified price.
 	* Given a customer ID give the hotel ID where the per-day cost incurred by that customer was the highest.
 * **Maintenance Companies**:
-	* Given a maintenance company ID, list the type of repair, the hotel, and the room number for all repairs made by that company. - FCT 17
+	* Given a maintenance company ID, list the type of repair, the hotel, and the room number for all repairs made by that company. - FCT 18
 	* For a given date range, list all the requests received by the maintenance company from a particular hotel manager ID.
 
 

@@ -334,15 +334,16 @@ public class DBProject {
 				System.out.println("14. Get customer total cost occurred for a give date range"); 
                 System.out.println("************************** Hotel Staff ***************************");
 				System.out.println("15. List the staff detail");
+                System.out.println("16. List request detail by managerID");
                 System.out.println("*************************** Customers ****************************");
-				System.out.println("16. Get top k highest booking price for a customer");
+				System.out.println("17. Get top k highest booking price for a customer");
                 System.out.println("********************* Maintenance Companies **********************");
-				System.out.println("17. List the repairs made by maintenance company");
-				System.out.println("18. Get top k maintenance companies based on repair count");
-				System.out.println("19. Get number of repairs occurred per year for a given hotel room");
+				System.out.println("18. List the repairs made by maintenance company");
+				System.out.println("19. Get top k maintenance companies based on repair count");
+				System.out.println("20. Get number of repairs occurred per year for a given hotel room");
                 System.out.println("*****************************************************************");
-                System.out.println("20. Custom Query");
-				System.out.println("21. < EXIT");
+                System.out.println("21. Custom Query");
+				System.out.println("22. < EXIT");
 
             switch (readChoice()){
 				   case 1: addCustomer(esql); break;
@@ -360,12 +361,13 @@ public class DBProject {
                    case 13: retrieveCustomerInfo(esql); break; // newly defined method
 				   case 14: totalCostForCustomer(esql); break;
                    case 15: listStaffDetail(esql); break; // newly defined method
-				   case 16: topKHighestPriceBookingsForACustomer(esql); break;
-				   case 17: listRepairsMade(esql); break;
-				   case 18: topKMaintenanceCompany(esql); break;
-				   case 19: numberOfRepairsForEachRoomPerYear(esql); break;
-                   case 20: executeCustom(esql); break;
-				   case 21: keepon = false; break;
+                   case 16: getRequestDetailFromManager(esql); break; // newly defined method
+				   case 17: topKHighestPriceBookingsForACustomer(esql); break;
+				   case 18: listRepairsMade(esql); break;
+				   case 19: topKMaintenanceCompany(esql); break;
+				   case 20: numberOfRepairsForEachRoomPerYear(esql); break;
+                   case 21: executeCustom(esql); break;
+				   case 22: keepon = false; break;
 				   default : System.out.println("Unrecognized choice!"); break;
             }//end switch
          }//end while
@@ -1307,6 +1309,7 @@ public class DBProject {
    }//end totalCostForCustomer
 
    public static void listStaffDetail(DBProject esql) {
+    // Given HotelID list all the details of staff belong to the hotel
     try {
         System.out.print("\t*Enter HotelID: ");
         String input = in.readLine();
@@ -1321,6 +1324,49 @@ public class DBProject {
         //System.out.println("Query made is: " + query);
         int rowCount = esql.executeQuery(query);
         System.out.println("total row(s): " + rowCount);
+    } catch (Exception e) {
+        System.err.println(e.getMessage());
+    }
+   }
+
+   public static void getRequestDetailFromManager(DBProject esql) {
+    // Given managerID list the hotelID, room number and date of request.
+    try {
+        System.out.print("\t*Enter ManagerID: ");
+        String input = in.readLine();
+        while(input.length() == 0) {
+            //if user didn't input something but just enter
+            System.out.print("\tManagerID cannot be null! Try again:");
+            input = in.readLine();
+        }
+        String ManagerID = input;
+
+        /*// get hotelID
+        Statement stmt = esql._connection.createStatement();
+        // issues the update instruction
+        ResultSet rs =  stmt.executeQuery("SELECT hotelID FROM Hotel Where manager = " + ManagerID);
+        // gets the result of count
+        rs.next();
+        roomType = rs.getString(1);
+        // close the instruction
+        stmt.close();*/
+
+        // get repairID
+        Statement stmt = esql._connection.createStatement();
+        // issues the update instruction
+        ResultSet rs =  stmt.executeQuery("SELECT repairID FROM Request Where managerID = " + ManagerID);
+        // gets the result of count
+        rs.next();
+        String rpID = rs.getString(1);
+        // close the instruction
+        stmt.close();
+
+        // make query
+        String query = "SELECT rp.roomNo as room_no, rp.hotelID as hotel_id, rq.requestDate as request_date FROM Repair rp, Request rq WHERE rp.rID = " + rpID + " AND rq.repairID = " + rpID;
+        //System.out.println("Query made is: " + query);
+        int rowCount = esql.executeQuery(query);
+        System.out.println("total row(s): " + rowCount);        
+
     } catch (Exception e) {
         System.err.println(e.getMessage());
     }
