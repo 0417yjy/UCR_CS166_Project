@@ -494,9 +494,52 @@ public class DBProject {
 
    public static void addRoom(DBProject esql){
 	  // Given room details add the room in the DB
+<<<<<<< Updated upstream
       // Your code goes here.
       // ...
       // ...
+=======
+    try{
+    String query = "INSERT INTO Room (hotelID, roomNo, roomType) VALUES (";
+    System.out.print("\t*Enter HotelID: ");
+    String input = in.readLine();
+    while(input.length() == 0) {
+      //if user didn't input something but just enter
+      System.out.print("\tHotelID cannot be null! Try again:");
+      input = in.readLine();
+    }
+    String hotelID = input;
+
+    //should i ask roomNO 
+    System.out.print("\t*Enter RoomNo: ");
+    input = in.readLine();
+    while(input.length() ==0){
+      System.out.print("\tRoomNo cannot be null! Try again: ");
+      input = in.readLine();
+    }
+    String roomNo = input;
+
+    //room type
+    System.out.print("\t*Enter RoomType ");
+    input = in.readLine();
+    while(input.length() == 0){
+      System.out.print("\tRoomType cannot be null! Try again: ");
+      input = in.readLine();
+    }
+    //change first character to upper case
+    String roomType = input.substring(0, 1).toUpperCase() + input.substring(1);
+
+    query += (hotelID + ", " + roomNo + ", " + roomType + ")");
+    System.out.println("Query made is: " + query);
+    System.out.print("Executing query...");
+    esql.executeUpdate(query);
+    System.out.println("Completed");
+    }
+    catch(Exception e){
+      System.err.println (e.getMessage());
+    }
+
+>>>>>>> Stashed changes
    }//end addRoom
 
    public static void addMaintenanceCompany(DBProject esql){
@@ -922,10 +965,62 @@ public class DBProject {
    }//end topKHighestPriceBookingsForACustomer
    
    public static void totalCostForCustomer(DBProject esql){
-	  // Given a hotelID, customer Name and date range get the total cost incurred by the customer
-      // Your code goes here.
-      // ...
-      // ...
+      // Given a hotelID, customer Name and date range get the total cost incurred by the customer
+      boolean valid_name = false;
+      int customer_id = -1;
+
+      try{
+        //get user inputs
+        System.out.print("\t*Enter HotelID: ");
+        String input = in.readLine();
+        while(input.length() == 0) {
+            //if user didn't input something but just enter
+            System.out.print("\tHotelID cannot be null! Try again:");
+            input = in.readLine();
+        }
+        String hotelID = input;
+
+        System.out.print("\t*Enter Customer's Name([fname] [lname]): ");
+        while(!valid_name) {
+            input = in.readLine();
+            if(input.length() == 0) {
+                // if user didn't input something but just enter
+                System.out.print("\tYou must enter name! Try again: ");
+             }
+            customer_id = esql.getID(1, input, "Customer");
+            if(customer_id == -1) {
+                // searching customer failed
+                System.out.print("\tInvalid name! Try again: ");
+            }
+            else {
+                // found customer id. go to the next step
+                valid_name = true;
+            }
+        }
+
+        System.out.print("\t*Enter Start date for search(mm/dd/yyyy): ");
+        String input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tDate cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String start_date = input;
+
+        System.out.print("\t*Enter End date for search(mm/dd/yyyy): ");
+        input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tDate cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String end_date = input;
+
+        String query = "SELECT SUM(price) as total_cost FROM Booking WHERE bookingDate >= '" + start_date + "' AND bookingDate <= '" + end_date + "' AND customer = " + Integer.toString(customer_id);
+        System.out.println("Query made is: " + query);
+        int rowCount = esql.executeQuery(query);
+        System.out.println("total row(s): " + rowCount);
+    }
    }//end totalCostForCustomer
    
    public static void listRepairsMade(DBProject esql){
