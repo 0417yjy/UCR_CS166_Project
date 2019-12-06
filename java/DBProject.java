@@ -1044,10 +1044,55 @@ public class DBProject {
    }//end topKHighestRoomPriceForADateRange
    
    public static void topKHighestPriceBookingsForACustomer(DBProject esql){
-	  // Given a customer Name, List Top K highest booking price for a customer 
-      // Your code goes here.
-      // ...
-      // ...
+      // Given a customer Name, List Top K highest booking price for a customer
+      boolean valid_name = false;
+      int customer_id = -1;
+
+     try {
+        String input = "";
+        System.out.print("\t*Enter Customer's Name([fname] [lname]): ");
+        while(!valid_name) {
+            input = in.readLine();
+            if(input.length() == 0) {
+                // if user didn't input something but just enter
+                System.out.print("\tYou must enter name! Try again: ");
+             }
+            customer_id = esql.getID(1, input, "Customer");
+            if(customer_id == -1) {
+                // searching customer failed
+                System.out.print("\tInvalid name! Try again: ");
+            }
+            else {
+                // found customer id. go to the next step
+                valid_name = true;
+            }
+        }
+
+        System.out.print("\t*How many rows do you want to get? : ");
+        input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tThis cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String getting_rows_str = input;
+        int getting_rows;
+        // parse user inputs into integer
+        try {
+            getting_rows = Integer.parseInt(getting_rows_str);
+        }
+        catch(NumberFormatException e) {
+            System.out.println("Failed to get number from your input! Number K will be 1..");
+            getting_rows = 1;
+        }
+
+        String query = "SELECT customer as customer_id, price FROM Booking WHERE customer = " + Integer.toString(customer_id) + " ORDER BY price DESC LIMIT " + Integer.toString(getting_rows);
+        System.out.println("Query made is: " + query);
+        int rowCount = esql.executeQuery(query);
+        System.out.println("total row(s): " + rowCount);
+     } catch (Exception e) {
+        System.err.println (e.getMessage());
+     }
    }//end topKHighestPriceBookingsForACustomer
    
    public static void totalCostForCustomer(DBProject esql){
