@@ -828,8 +828,7 @@ public class DBProject {
 
       // set values and insert a new one
       try{
-        String rq_query = "INSERT INTO Request (reqID, managerID, repairID, requestDate";
-        String rp_query = "INSERT INTO Repair (rID, hotelID, roomNo, mCompany, repairDate";
+        String rq_query = "INSERT INTO Request (reqID, managerID, repairID, requestDate, description) VALUES (";
 
         //get user inputs
         System.out.print("\t*Enter HotelID: ");
@@ -861,75 +860,36 @@ public class DBProject {
         }
         String roomNo = input;
 
-        System.out.print("\t*Enter Repair Date(mm/dd/yyyy): ");
+        System.out.print("\t*Enter Repair ID: ");
+        input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tRepair ID cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String rp_id = input;
+
+        System.out.print("\t*Enter Request Date(mm/dd/yyyy): ");
         input = in.readLine();
         while(input.length() == 0) {
            // if user didn't input something but just enter
            System.out.print("\tRepair Date cannot be null! Try again: ");
            input = in.readLine();
         }
-        String rp_date = input;
+        String rq_date = input;
 
-        System.out.print("\t*Enter Maintenance Company ID: ");
-        input = in.readLine();
-        while(input.length() == 0) {
-           // if user didn't input something but just enter
-           System.out.print("\tMaintenance Company ID cannot be null! Try again: ");
-           input = in.readLine();
-        }
-        String mc_id = input;
-
-        System.out.print("\tEnter Description: ");
-         input = in.readLine();
-         String description = "";
-         if(input.length() != 0) {
-            // if user insert address
-            description_inserted = true;
-            description = input;
-        }
-
-        System.out.print("\tEnter Repair Type(Small / Medium / Large): ");
-         input = in.readLine();
-         String rptype = "";
-         if(input.length() != 0) {
-            // if user insert address
-            rptype_inserted = true;
-            rptype = input;
-        }
-
-        // complete repair insert query
-        if(description_inserted) {
-            rp_query += ", description";
-        }
-        if(rptype_inserted) {
-            rp_query += ", repairType";
-        }
-        rp_query += (") VALUES (" + Integer.toString(new_id) + ", " + hotelID + ", " + roomNo + ", " + mc_id + ", '" + rp_date + "'");
-        if(description_inserted) {
-            rp_query += ", '" + description + "'";
-        }
-        if(rptype_inserted) {
-            rp_query += ", '" + rptype + "'";
-        }
-        rp_query += ")";
-
-        // insert into repair relation
-        //System.out.println("Query made is: " + rp_query);
-        System.out.print("Executing query...");
-        esql.executeUpdate(rp_query);
-        System.out.println("Completed");
+        // get description from Repair
+        Statement stmt = esql._connection.createStatement();
+         // issues the update instruction
+        ResultSet rs =  stmt.executeQuery("SELECT description FROM Repair Where rID = " + rp_id);
+        // gets the result of count
+        rs.next();
+        String description = rs.getString(1);
+        // close the instruction
+        stmt.close();
 
         // complete request insert query
-        DateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
-        Date date = new Date(); // to get today's date
-        if(description_inserted) {
-            rq_query += ", description";
-        }
-        rq_query += ") VALUES (" + Integer.toString(new_id) + ", " + Integer.toString(m_id) + ", " + Integer.toString(new_id) + ", '" + dateformat.format(date) + "'";
-        if(description_inserted) {
-            rq_query += ", '" + description + "'";
-        }
-        rq_query += ")";
+        rq_query += Integer.toString(new_id) + ", " + Integer.toString(m_id) + ", " + rp_id + ", '" + rq_date + "', ''" + description + "')";
 
         // insert into request relation
         //System.out.println("Query made is: " + rq_query);
