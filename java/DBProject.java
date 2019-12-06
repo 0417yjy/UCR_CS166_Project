@@ -973,9 +973,30 @@ public class DBProject {
    
    public static void numberOfAvailableRooms(DBProject esql){
 	  // Given a hotelID, get the count of rooms available 
-      // Your code goes here.
-      // ...
-      // ...
+    try{
+    System.out.print("\t*Enter the HotelID: ");
+    String input = in.readLine();
+    while(input.length() == 0) {
+    //if user didn't input something but just enter
+    System.out.print("\tHotelID cannot be null! Try again:");
+    input = in.readLine();
+    }
+      String hotelID = input;
+
+      //today's date
+      String date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
+    //compare with today's date
+    String query = ("SELECT COUNT(*) FROM (SELECT r.roomNo FROM Room r WHERE r.hotelID = " + hotelID);
+
+    query += ("EXCEPT (SELECT b.roomNo FROM Booking b WHERE b.bookingDate = " + "'" + date + "'" + "AND b.hotelID = " + hotelID + "))" + "as t");
+
+    System.out.print("There are ");
+    String temp = Integer.toString(esql.getCountByExecute(query));
+    System.out.println(temp + " available room today \n");
+
+    } catch (Exception e){
+          System.err.println (e.getMessage());
+      }
    }//end numberOfAvailableRooms
    
    public static void numberOfBookedRooms(DBProject esql){
