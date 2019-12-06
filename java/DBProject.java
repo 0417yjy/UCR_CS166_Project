@@ -434,7 +434,7 @@ public class DBProject {
             phno = input;
          }
 
-         System.out.print("\tEnter Birth of Date(dd/mm/yyyy): ");
+         System.out.print("\tEnter Birth of Date(mm/dd/yyyy): ");
          input = in.readLine();
          String dob = "";
          if(input.length() != 0) {
@@ -507,7 +507,7 @@ public class DBProject {
 
     //should i ask roomNO 
     System.out.print("\t*Enter RoomNo: ");
-    String input = in.readLine();
+    input = in.readLine();
     while(input.length() ==0){
       System.out.print("\tRoomNo cannot be null! Try again: ");
       input = in.readLine();
@@ -515,8 +515,8 @@ public class DBProject {
     String roomNo = input;
 
     //room type
-    System.out.print("\t*Enter RoomType ");
-    String input = in.readLine();
+    System.out.print("\t*Enter RoomType (Suite / Economy / Deluxe");
+    input = in.readLine();
     while(input.length() == 0){
       System.out.print("\tRoomType cannot be null! Try again: ");
       input = in.readLine();
@@ -608,9 +608,88 @@ public class DBProject {
 
    public static void addRepair(DBProject esql){
 	  // Given repair details add repair in the DB
-      // Your code goes here.
-      // ...
-      // ...
+      boolean description_inserted = false;
+    boolean rptype_inserted = false;
+    int new_id = esql.getNewID("Repair");
+      
+    try{
+      String query = "INSERT INTO Repair (rID, hotelID, roomNo, mCompany, repairDate";
+
+      //get user inputs
+      System.out.print("\t*Enter HotelID: ");
+      String input = in.readLine();
+      while(input.length() ==0) {
+        //if user didn't input something but just enter
+        System.out.print("\tHotelID cannot be null! Try again: ");
+        input = in.readLine();
+      }
+      String hotelID = input;
+
+      System.out.print("\t*Enter RoomNo: ");
+      input = in.readLine();
+      while(input.length() ==0) {
+        //if user didn't input something but just enter
+        System.out.print("\tRoomNo cannot be null! Try again: ");
+        input = in.readLine();
+      }
+      String RoomNo = input;
+
+      System.out.print("\t*Enter cmpID: ");
+      input = in.readLine();
+      while(input.length() ==0) {
+        System.out.print("\tcmpID cannot be null! Try again: ");
+        input = in.readLine();
+      }
+      String mCompany = input;
+
+      System.out.print("\t*Enter Repair Date(mm/dd/yyyy: ");
+      input = in.readLine();
+      while(input.length() == 0) {
+              // if user didn't input something but just enter
+              System.out.print("\tRepair Date cannot be null! Try again: ");
+             input = in.readLine();
+          }
+      String repairDate = input;
+
+      System.out.print("\tEnter description for this repair: ");
+      input = in.readLine();
+      String description = "";
+      if(input.length() !=0){
+        //if user insert something
+        description_inserted = true;
+        description = input;
+      }
+
+      System.out.print("\tEnter Repair Type(Small / Medium / Large: ");
+      input = in.readLine();
+      String rptype = "";
+      if(input.length() != 0) {
+          // if user insert address
+          rptype_inserted = true;
+          rptype = input;
+      }
+
+      // complete repair insert query
+      if(description_inserted) {
+          query += ", description";
+      }
+      if(rptype_inserted) {
+          query += ", repairType";
+      }
+      query += (") VALUES (" + Integer.toString(new_id) + ", " + hotelID + ", " + RoomNo + ", " + mCompany + ", " + repairDate + "'");
+      if(description_inserted) {
+          query += ", '" + description + "'";
+      }
+      if(rptype_inserted) {
+          query += ", '" + rptype + "'";
+      }
+      query += ")";
+      System.out.print("Executing query...");
+      esql.executeUpdate(query);
+      System.out.println("Completed");
+       } catch(Exception e){
+      System.err.println (e.getMessage());
+      }
    }//end addRepair
 
    public static void bookRoom(DBProject esql){
@@ -660,7 +739,7 @@ public class DBProject {
             }
         }
 
-        System.out.print("\t*Enter Booking Date(dd/mm/yyyy): ");
+        System.out.print("\t*Enter Booking Date(mm/dd/yyyy): ");
         input = in.readLine();
         while(input.length() == 0) {
             // if user didn't input something but just enter
