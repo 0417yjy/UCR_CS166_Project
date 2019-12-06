@@ -27,6 +27,7 @@ import java.util.StringTokenizer; // for get id by given name
 
 // to get today's date
 import java.util.Date; 
+import java.util.Calendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -974,7 +975,7 @@ public class DBProject {
 
     System.out.print("There are ");
     String temp = Integer.toString(esql.getCountByExecute(query));
-    System.out.println(temp + " available room today \n");
+    System.out.println(temp + " available rooms today \n");
 
     } catch (Exception e){
           System.err.println (e.getMessage());
@@ -1009,10 +1010,47 @@ public class DBProject {
    }//end numberOfBookedRooms
    
    public static void listHotelRoomBookingsForAWeek(DBProject esql){
-	  // Given a hotelID, date - list all the rooms available for a week(including the input date) 
-      // Your code goes here.
-      // ...
-      // ...
+	  // Given a hotelID, date - list all the rooms available for a week(including the input date)
+    try{
+      System.out.print("\t*Enter the HotelID: ");
+      String input = in.readLine();
+      while(input.length() == 0) {
+      //if user didn't input something but just enter
+      System.out.print("\tHotelID cannot be null! Try again:");
+      input = in.readLine();
+      }
+      String hotelID = input;
+
+      System.out.print("\t*Enter Start date for search(mm/dd/yyyy): ");
+      input = in.readLine();
+      while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tDate cannot be null! Try again: ");
+           input = in.readLine();
+        }
+      String start_date_str = input;
+  
+      // parse input string to date object
+      Date start_date = new SimpleDateFormat("MM/dd/yyyy").parse(start_date_str);
+      // convert date to calendar
+      Calendar c = Calendar.getInstance();
+      c.setTime(start_date);
+      // calculate end_date
+      c.add(Calendar.DATE, 6);
+      Date end_date = c.getTime();
+      // get end date in string
+      String end_date_str = new SimpleDateFormat("MM/dd/yyyy").format(end_date);
+
+      // make query
+      String query = ("SELECT roomNo FROM (SELECT r.roomNo FROM Room r WHERE r.hotelID = " + hotelID);
+      query += ("EXCEPT (SELECT b.roomNo FROM Booking b WHERE b.bookingDate >= " + "'" + start_date_str + "' AND b.bookingDate <= '" + end_date_str + "' AND b.hotelID = " + hotelID + "))" + "as t");
+  
+      System.out.println("Query made is: " + query);
+      int rowCount = esql.executeQuery(query);
+      System.out.println("total row(s): " + rowCount);
+      } catch (Exception e){
+            System.err.println (e.getMessage());
+        }
    }//end listHotelRoomBookingsForAWeek
    
    public static void topKHighestRoomPriceForADateRange(DBProject esql){
