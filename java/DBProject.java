@@ -372,8 +372,8 @@ public class DBProject {
 				   case 19: listRepairsMade(esql); break;
 				   case 20: topKMaintenanceCompany(esql); break;
 				   case 21: numberOfRepairsForEachRoomPerYear(esql); break;
-                   case 22: executeCustom(esql); break;
-				   case 23: keepon = false; break;
+                 //  case 22: executeCustom(esql); break;
+				   case 22: keepon = false; break;
 				   default : System.out.println("Unrecognized choice!"); break;
             }//end switch
          }//end while
@@ -395,18 +395,18 @@ public class DBProject {
    
    public static void Greeting(){
       System.out.println("************************************************************************");
-      System.out.println("    _   _     ___     _______    ______     _                     ");
-      System.out.println("   | |_| |   /   \\   |__   __|  |  ____|   | |                      ");
-      System.out.println("   |     |  |  |  |     | |     | |____    | |                 ");
-      System.out.println("   |  |  |  |  |  |     | |     |  ____|   | |               ");
-      System.out.println("   |  _  |  |  |  |     | |     | |____    | |_____                   ");
-      System.out.println("   |_| |_|   \\___/      |_|     |______|   |_______|               ");
+      System.out.println("              _   _     ___     _______    ______     _                     ");
+      System.out.println("             | |_| |   /   \\   |__   __|  |  ____|   | |                      ");
+      System.out.println("             |     |  |  |  |     | |     | |____    | |                 ");
+      System.out.println("             |  |  |  |  |  |     | |     |  ____|   | |               ");
+      System.out.println("             |  _  |  |  |  |     | |     | |____    | |_____                   ");
+      System.out.println("             |_| |_|   \\___/      |_|     |______|   |_______|               ");
       
       System.out.println("************************************************************************");
       System.out.print("\n\n");
       
       System.out.println("************************************************************************");
-      System.out.println("                             User Interface       	                    ");
+      System.out.println("                             User Interface                             ");
       System.out.println("************************************************************************");
       System.out.println("------------------------------------------------------------------------");
 
