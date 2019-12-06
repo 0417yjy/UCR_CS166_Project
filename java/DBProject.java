@@ -332,15 +332,17 @@ public class DBProject {
                 System.out.println("12. Get a list of customers who made bookings for a given date");
                 System.out.println("13. Get a customer's info with a booking ID");
 				System.out.println("14. Get customer total cost occurred for a give date range"); 
+                System.out.println("************************** Hotel Staff ***************************");
+				System.out.println("15. List the staff detail");
                 System.out.println("*************************** Customers ****************************");
-				System.out.println("15. Get top k highest booking price for a customer");
+				System.out.println("16. Get top k highest booking price for a customer");
                 System.out.println("********************* Maintenance Companies **********************");
-				System.out.println("16. List the repairs made by maintenance company");
-				System.out.println("17. Get top k maintenance companies based on repair count");
-				System.out.println("18. Get number of repairs occurred per year for a given hotel room");
+				System.out.println("17. List the repairs made by maintenance company");
+				System.out.println("18. Get top k maintenance companies based on repair count");
+				System.out.println("19. Get number of repairs occurred per year for a given hotel room");
                 System.out.println("*****************************************************************");
-                System.out.println("19. Custom Query");
-				System.out.println("20. < EXIT");
+                System.out.println("20. Custom Query");
+				System.out.println("21. < EXIT");
 
             switch (readChoice()){
 				   case 1: addCustomer(esql); break;
@@ -357,12 +359,13 @@ public class DBProject {
                    case 12: listCustomerBookingForADate(esql); break; // newly defined method
                    case 13: retrieveCustomerInfo(esql); break; // newly defined method
 				   case 14: totalCostForCustomer(esql); break;
-				   case 15: topKHighestPriceBookingsForACustomer(esql); break;
-				   case 16: listRepairsMade(esql); break;
-				   case 17: topKMaintenanceCompany(esql); break;
-				   case 18: numberOfRepairsForEachRoomPerYear(esql); break;
-                   case 19: executeCustom(esql); break;
-				   case 20: keepon = false; break;
+                   case 15: listStaffDetail(esql); break; // newly defined method
+				   case 16: topKHighestPriceBookingsForACustomer(esql); break;
+				   case 17: listRepairsMade(esql); break;
+				   case 18: topKMaintenanceCompany(esql); break;
+				   case 19: numberOfRepairsForEachRoomPerYear(esql); break;
+                   case 20: executeCustom(esql); break;
+				   case 21: keepon = false; break;
 				   default : System.out.println("Unrecognized choice!"); break;
             }//end switch
          }//end while
@@ -1278,13 +1281,33 @@ public class DBProject {
         String end_date = input;
 
         String query = "SELECT SUM(price) as total_cost FROM Booking WHERE bookingDate >= '" + start_date + "' AND bookingDate <= '" + end_date + "' AND customer = " + Integer.toString(customer_id);
-        System.out.println("Query made is: " + query);
+        //System.out.println("Query made is: " + query);
         int rowCount = esql.executeQuery(query);
         System.out.println("total row(s): " + rowCount);
     } catch (Exception e) {
         System.err.println (e.getMessage());
     }
    }//end totalCostForCustomer
+
+   public static void listStaffDetail(DBProject esql) {
+    try {
+        System.out.print("\t*Enter HotelID: ");
+        String input = in.readLine();
+        while(input.length() == 0) {
+            //if user didn't input something but just enter
+            System.out.print("\tHotelID cannot be null! Try again:");
+            input = in.readLine();
+        }
+        String hotelID = input;
+
+        String query = "SELECT * FROM Staff WHERE employerID = " + hotelID;
+        //System.out.println("Query made is: " + query);
+        int rowCount = esql.executeQuery(query);
+        System.out.println("total row(s): " + rowCount);
+    } catch (Exception e) {
+        System.err.println(e.getMessage());
+    }
+   }
    
    public static void listRepairsMade(DBProject esql){
 	  // Given a Maintenance company name list all the repairs along with repairType, hotelID and roomNo
