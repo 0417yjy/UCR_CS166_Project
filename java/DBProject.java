@@ -156,7 +156,7 @@ public class DBProject {
 
         // complete query
         query += (fname + "' AND lname = '" + lname + "'");
-        System.out.println("Query made is: " + query);
+        //System.out.println("Query made is: " + query);
         
         // creates a statement object
         Statement stmt = this._connection.createStatement();
