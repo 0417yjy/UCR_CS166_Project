@@ -815,9 +815,49 @@ public class DBProject {
 
    public static void assignHouseCleaningToRoom(DBProject esql){
 	  // Given Staff SSN, HotelID, roomNo Assign the staff to the room 
-      // Your code goes here.
-      // ...
-      // ...
+    int new_id = esql.getNewID("Assigned");
+
+      try{
+        String query = "INSERT INTO Assigned (asgID, staffID, hotelID, roomNo) VALUES (";
+
+        //get user input
+        System.out.print("\t*Enter staffID: ");
+        String input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tstaffID cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String staffID = input;
+        //get staff's id
+        int s_id = esql.getID(2, input, "Staff");
+
+        System.out.print("\t*Enter HotelID: ");
+        input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tHotelID cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String hotelID = input;
+
+        System.out.print("\t*Enter Room No: ");
+        input = in.readLine();
+        while(input.length() == 0) {
+           // if user didn't input something but just enter
+           System.out.print("\tRoom No cannot be null! Try again: ");
+           input = in.readLine();
+        }
+        String roomNo = input;
+
+        query += Integer.toString(new_id) + ", " + Integer.toString(s_id) + ", " + hotelID + ", " + roomNo + ")";
+        System.out.print("Executing query...");
+        esql.executeUpdate(query);
+        System.out.println("Completed");
+        } catch(Exception e){
+        System.err.println (e.getMessage());
+    }
+
    }//end assignHouseCleaningToRoom
    
    public static void repairRequest(DBProject esql){
