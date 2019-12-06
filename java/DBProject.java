@@ -643,7 +643,7 @@ public class DBProject {
       }
       String mCompany = input;
 
-      System.out.print("\t*Enter Repair Date(mm/dd/yyyy: ");
+      System.out.print("\t*Enter Repair Date(mm/dd/yyyy): ");
       input = in.readLine();
       while(input.length() == 0) {
               // if user didn't input something but just enter
@@ -661,7 +661,7 @@ public class DBProject {
         description = input;
       }
 
-      System.out.print("\tEnter Repair Type(Small / Medium / Large: ");
+      System.out.print("\tEnter Repair Type(Small / Medium / Large): ");
       input = in.readLine();
       String rptype = "";
       if(input.length() != 0) {
@@ -677,7 +677,7 @@ public class DBProject {
       if(rptype_inserted) {
           query += ", repairType";
       }
-      query += (") VALUES (" + Integer.toString(new_id) + ", " + hotelID + ", " + RoomNo + ", " + mCompany + ", " + repairDate + "'");
+      query += (") VALUES (" + Integer.toString(new_id) + ", " + hotelID + ", " + RoomNo + ", " + mCompany + ", '" + repairDate + "'");
       if(description_inserted) {
           query += ", '" + description + "'";
       }
