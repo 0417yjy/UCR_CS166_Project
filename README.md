@@ -33,7 +33,7 @@
 	* Given a hotel ID, list a given room’s bookings for the week. - FCT 10
 	* For each hotel ID, get highest price among all booked rooms for a given data range. - FCT 11
 	* Given a hotel ID and a date, get (1) the number of rooms still available and (2) number of rooms booked - FCT 8/9
-	* Given a hotel ID and date, get a list of customers who made bookings for that date.
+	* Given a hotel ID and date, get a list of customers who made bookings for that date. - FCT 12
 	* Given a booking ID, retrieve information about the customer (First & Last Name, Gender, Date of birth, Address) who made the booking.
 	* Given a hotel ID and customer ID, get the total cost incurred by the customer for a given data range.
 * **Hotel Staff**:
