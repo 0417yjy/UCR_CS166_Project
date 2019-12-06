@@ -494,9 +494,46 @@ public class DBProject {
 
    public static void addRoom(DBProject esql){
 	  // Given room details add the room in the DB
-      // Your code goes here.
-      // ...
-      // ...
+    try{
+    String query = "INSERT INTO Room (hotelID, roomNo, roomType) VALUES (";
+    System.out.print("\t*Enter HotelID: ");
+    String input = in.readLine();
+    while(input.length() == 0) {
+      //if user didn't input something but just enter
+      System.out.print("\tHotelID cannot be null! Try again:");
+      input = in.readLine();
+    }
+    String hotelID = input;
+
+    //should i ask roomNO 
+    System.out.print("\t*Enter RoomNo: ");
+    String input = in.readLine();
+    while(input.length() ==0){
+      System.out.print("\tRoomNo cannot be null! Try again: ");
+      input = in.readLine();
+    }
+    String roomNo = input;
+
+    //room type
+    System.out.print("\t*Enter RoomType ");
+    String input = in.readLine();
+    while(input.length() == 0){
+      System.out.print("\tRoomType cannot be null! Try again: ");
+      input = in.readLine();
+    }
+    //change first character to upper case
+    String roomType = input.substring(0, 1).toUpperCase() + input.substring(1);
+
+    query += (hotelID + ", " + roomNo + ", " + roomType + ")");
+    System.out.println("Query made is: " + query);
+    System.out.print("Executing query...");
+    esql.executeUpdate(query);
+    System.out.println("Completed");
+    }
+    catch(Exception e){
+      System.err.println (e.getMessage());
+    }
+
    }//end addRoom
 
    public static void addMaintenanceCompany(DBProject esql){
