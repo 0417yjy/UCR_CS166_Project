@@ -525,7 +525,7 @@ public class DBProject {
     //change first character to upper case
     String roomType = input.substring(0, 1).toUpperCase() + input.substring(1);
 
-    query += (hotelID + ", " + roomNo + ", " + roomType + ")");
+    query += (hotelID + ", " + roomNo + ", '" + roomType + "')");
     System.out.println("Query made is: " + query);
     System.out.print("Executing query...");
     esql.executeUpdate(query);
