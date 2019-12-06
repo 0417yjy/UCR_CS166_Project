@@ -879,7 +879,7 @@ public class DBProject {
         String start_date = input;
 
         System.out.print("\t*Enter End date for search(mm/dd/yyyy): ");
-        String input = in.readLine();
+        input = in.readLine();
         while(input.length() == 0) {
            // if user didn't input something but just enter
            System.out.print("\tDate cannot be null! Try again: ");
@@ -888,7 +888,7 @@ public class DBProject {
         String end_date = input;
 
         System.out.print("\t*How many rows do you want to get? : ");
-        String input = in.readLine();
+        input = in.readLine();
         while(input.length() == 0) {
            // if user didn't input something but just enter
            System.out.print("\tThis cannot be null! Try again: ");
@@ -906,7 +906,7 @@ public class DBProject {
         }
 
         String query = "SELECT * FROM Booking WHERE bookingDate >= '" + start_date + "' AND bookingDate <= '" + end_date + "' ORDER BY price DESC LIMIT " + Integer.toString(getting_rows);
-        System.out.println("Query made is: " + query);
+        //System.out.println("Query made is: " + query);
         int rowCount = esql.executeQuery(query);
         System.out.println("total row(s): " + rowCount);
     } catch (Exception e) {
