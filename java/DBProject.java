@@ -396,12 +396,12 @@ public class DBProject {
    
    public static void Greeting(){
       System.out.println("************************************************************************");
-      System.out.println("              _   _     ___     _______    ______     _                     ");
-      System.out.println("             | |_| |   /   \\   |__   __|  |  ____|   | |                      ");
-      System.out.println("             |     |  |  |  |     | |     | |____    | |                 ");
-      System.out.println("             |  |  |  |  |  |     | |     |  ____|   | |               ");
-      System.out.println("             |  _  |  |  |  |     | |     | |____    | |_____                   ");
-      System.out.println("             |_| |_|   \\___/      |_|     |______|   |_______|               ");
+      System.out.println("    _   _     ___     _______    ______     _          +      +     +             _      +   ");
+      System.out.println("   | |_| |   /   \\   |__   __|  |  ____|   | |   +          __________      +    /0\\       +   ");
+      System.out.println("   |     |  |  |  |     | |     | |____    | |         +   /\\+++++++++\\         /_ _\\   +       ");
+      System.out.println("   |  |  |  |  |  |     | |     |  ____|   | |      +     /__\\_________\\  +     /o o\\          ");
+      System.out.println("   |  _  |  |  |  |     | |     | |____    | |_____       |    HOME    |       /_____\\   +      ");
+      System.out.println("   |_| |_|   \\___/      |_|     |______|   |_______|      |____________|  +      |~|       +   ");
       
       System.out.println("************************************************************************");
       System.out.print("\n\n");
