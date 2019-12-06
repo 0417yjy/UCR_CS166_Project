@@ -330,16 +330,17 @@ public class DBProject {
 				System.out.println("10. Get hotel bookings for a week");
 				System.out.println("11. Get top k rooms with highest price for a date range");
                 System.out.println("12. Get a list of customers who made bookings for a given date");
+                System.out.println("13. Get a customer's info with a booking ID");
                 System.out.println("*************************** Customers ****************************");
-				System.out.println("13. Get top k highest booking price for a customer");
-				System.out.println("14. Get customer total cost occurred for a give date range"); 
+				System.out.println("14. Get top k highest booking price for a customer");
+				System.out.println("15. Get customer total cost occurred for a give date range"); 
                 System.out.println("********************* Maintenance Companies **********************");
-				System.out.println("15. List the repairs made by maintenance company");
-				System.out.println("16. Get top k maintenance companies based on repair count");
-				System.out.println("17. Get number of repairs occurred per year for a given hotel room");
-                System.out.println("******************************************************************");
-                System.out.println("18. Custom Query");
-				System.out.println("19. < EXIT");
+				System.out.println("16. List the repairs made by maintenance company");
+				System.out.println("17. Get top k maintenance companies based on repair count");
+				System.out.println("18. Get number of repairs occurred per year for a given hotel room");
+                System.out.println("*****************************************************************");
+                System.out.println("19. Custom Query");
+				System.out.println("20. < EXIT");
 
             switch (readChoice()){
 				   case 1: addCustomer(esql); break;
@@ -354,13 +355,14 @@ public class DBProject {
 				   case 10: listHotelRoomBookingsForAWeek(esql); break;
 				   case 11: topKHighestRoomPriceForADateRange(esql); break;
                    case 12: listCustomerBookingForADate(esql); break; // newly defined method
-				   case 13: topKHighestPriceBookingsForACustomer(esql); break;
-				   case 14: totalCostForCustomer(esql); break;
-				   case 15: listRepairsMade(esql); break;
-				   case 16: topKMaintenanceCompany(esql); break;
-				   case 17: numberOfRepairsForEachRoomPerYear(esql); break;
-                   case 18: executeCustom(esql); break;
-				   case 19: keepon = false; break;
+                   case 13: retrieveCustomerInfo(esql); break; // newly defined method
+				   case 14: topKHighestPriceBookingsForACustomer(esql); break;
+				   case 15: totalCostForCustomer(esql); break;
+				   case 16: listRepairsMade(esql); break;
+				   case 17: topKMaintenanceCompany(esql); break;
+				   case 18: numberOfRepairsForEachRoomPerYear(esql); break;
+                   case 19: executeCustom(esql); break;
+				   case 20: keepon = false; break;
 				   default : System.out.println("Unrecognized choice!"); break;
             }//end switch
          }//end while
@@ -1140,6 +1142,27 @@ public class DBProject {
       String date = input;
 
       String query = "SELECT c.customerID, c.fname, c.lname, b.roomNo FROM Customer c, Booking b WHERE c.customerID = b.customer AND b.bookingDate = '" + date + "' AND b.hotelID = " + hotelID;
+        //System.out.println("Query made is: " + query);
+        int rowCount = esql.executeQuery(query);
+        System.out.println("total row(s): " + rowCount);
+    } catch (Exception e) {
+        System.err.println(e.getMessage());
+    }
+   }
+
+   public static void retrieveCustomerInfo(DBProject esql) {
+    // Given a booking ID, get customer's info
+    try {
+      System.out.print("\t*Enter the BookingID: ");
+      String input = in.readLine();
+      while(input.length() == 0) {
+        //if user didn't input something but just enter
+        System.out.print("\tBookingID cannot be null! Try again:");
+        input = in.readLine();
+      }
+      String bookingID = input;
+
+      String query = "SELECT c.fName, c.lName, c.Address, c.phNo, c.DOB, c.gender FROM Customer c, Booking b WHERE c.customerID = b.customer AND b.bID = " + bookingID;
         //System.out.println("Query made is: " + query);
         int rowCount = esql.executeQuery(query);
         System.out.println("total row(s): " + rowCount);
