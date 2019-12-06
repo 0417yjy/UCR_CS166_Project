@@ -1108,9 +1108,32 @@ public class DBProject {
    
    public static void topKMaintenanceCompany(DBProject esql){
 	  // List Top K Maintenance Company Names based on total repair count (descending order)
-      // Your code goes here.
-      // ...
-      // ...
+     try {
+      System.out.print("\t*How many rows do you want to get? : ");
+      input = in.readLine();
+      while(input.length() == 0) {
+          // if user didn't input something but just enter
+           System.out.print("\tThis cannot be null! Try again: ");
+           input = in.readLine();
+      }
+      String getting_rows_str = input;
+      int getting_rows;
+      // parse user inputs into integer
+      try {
+         getting_rows = Integer.parseInt(getting_rows_str);
+      }
+      catch(NumberFormatException e) {
+         System.out.println("Failed to get number from your input! Number K will be 1..");
+         getting_rows = 1;
+      }
+
+      String query = "SELECT mc.name, COUNT(*) AS total_repair_count FROM MaintenanceCompany mc, Repair r WHERE mc.cmpID = r.mCompany GROUP BY r.mCompany ORDER BY total_repair_count DESC LIMIT " + Integer.toString(getting_rows);
+      System.out.println("Query made is: " + query);
+      int rowCount = esql.executeQuery(query);
+      System.out.println("total row(s): " + rowCount);
+     } catch(Exception e) {
+        System.err.println(e.getMessage());
+     }
    }//end topKMaintenanceCompany
    
    public static void numberOfRepairsForEachRoomPerYear(DBProject esql){
