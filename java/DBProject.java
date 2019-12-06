@@ -331,9 +331,9 @@ public class DBProject {
 				System.out.println("11. Get top k rooms with highest price for a date range");
                 System.out.println("12. Get a list of customers who made bookings for a given date");
                 System.out.println("13. Get a customer's info with a booking ID");
+				System.out.println("14. Get customer total cost occurred for a give date range"); 
                 System.out.println("*************************** Customers ****************************");
-				System.out.println("14. Get top k highest booking price for a customer");
-				System.out.println("15. Get customer total cost occurred for a give date range"); 
+				System.out.println("15. Get top k highest booking price for a customer");
                 System.out.println("********************* Maintenance Companies **********************");
 				System.out.println("16. List the repairs made by maintenance company");
 				System.out.println("17. Get top k maintenance companies based on repair count");
@@ -356,8 +356,8 @@ public class DBProject {
 				   case 11: topKHighestRoomPriceForADateRange(esql); break;
                    case 12: listCustomerBookingForADate(esql); break; // newly defined method
                    case 13: retrieveCustomerInfo(esql); break; // newly defined method
-				   case 14: topKHighestPriceBookingsForACustomer(esql); break;
-				   case 15: totalCostForCustomer(esql); break;
+				   case 14: totalCostForCustomer(esql); break;
+				   case 15: topKHighestPriceBookingsForACustomer(esql); break;
 				   case 16: listRepairsMade(esql); break;
 				   case 17: topKMaintenanceCompany(esql); break;
 				   case 18: numberOfRepairsForEachRoomPerYear(esql); break;

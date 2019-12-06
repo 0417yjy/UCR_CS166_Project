@@ -35,7 +35,7 @@
 	* Given a hotel ID and a date, get (1) the number of rooms still available and (2) number of rooms booked - FCT 8/9
 	* Given a hotel ID and date, get a list of customers who made bookings for that date. - FCT 12
 	* Given a booking ID, retrieve information about the customer (First & Last Name, Gender, Date of birth, Address) who made the booking. - FCT 13
-	* Given a hotel ID and customer ID, get the total cost incurred by the customer for a given data range.
+	* Given a hotel ID and customer ID, get the total cost incurred by the customer for a given data range. - FCT 14
 * **Hotel Staff**:
 	* Given a Hotel ID, list all details pertaining to staff, including their positions/roles (Hotel Managers, Receptionists, House cleaning, etc.) who are employed by that hotel.
 	* Hotel Managers may make maintenance/room repair requests, which will be handled by a maintenance company. The maintenance company must be certified to handle that specific type of repair. Given a manager ID list the hotel ID, room number and date of request.
