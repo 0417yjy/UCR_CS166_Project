@@ -312,8 +312,11 @@ public class DBProject {
          boolean keepon = true;
          while(keepon) {
             // These are sample SQL statements
-				System.out.println("MAIN MENU");
-				System.out.println("---------");
+                System.out.println("------------------------------------------------------------------");
+				System.out.println("                              MAIN MENU                           ");
+				System.out.println("------------------------------------------------------------------");
+                System.out.println();
+                System.out.println("***************** Add a new value into relations *****************");
 				System.out.println("1. Add new customer");
 				System.out.println("2. Add new room");
 				System.out.println("3. Add new maintenance company");
@@ -321,15 +324,19 @@ public class DBProject {
 				System.out.println("5. Add new Booking"); 
 				System.out.println("6. Assign house cleaning staff to a room");
 				System.out.println("7. Raise a repair request");
+                System.out.println("************************ Hotel Management ************************");
 				System.out.println("8. Get number of available rooms");
 				System.out.println("9. Get number of booked rooms");
 				System.out.println("10. Get hotel bookings for a week");
 				System.out.println("11. Get top k rooms with highest price for a date range");
+                System.out.println("*************************** Customers ****************************");
 				System.out.println("12. Get top k highest booking price for a customer");
 				System.out.println("13. Get customer total cost occurred for a give date range"); 
+                System.out.println("********************* Maintenance Companies **********************");
 				System.out.println("14. List the repairs made by maintenance company");
 				System.out.println("15. Get top k maintenance companies based on repair count");
 				System.out.println("16. Get number of repairs occurred per year for a given hotel room");
+                System.out.println("******************************************************************");
                 System.out.println("17. Custom Query");
 				System.out.println("18. < EXIT");
 
