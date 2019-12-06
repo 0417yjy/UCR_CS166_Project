@@ -525,7 +525,7 @@ public class DBProject {
     //change first character to upper case
     String roomType = input.substring(0, 1).toUpperCase() + input.substring(1);
 
-    query += (hotelID + ", " + roomNo + ", " + roomType + ")");
+    query += (hotelID + ", " + roomNo + ", '" + roomType + "')");
     System.out.println("Query made is: " + query);
     System.out.print("Executing query...");
     esql.executeUpdate(query);
@@ -1070,7 +1070,7 @@ public class DBProject {
 	  // List Top K Maintenance Company Names based on total repair count (descending order)
      try {
       System.out.print("\t*How many rows do you want to get? : ");
-      input = in.readLine();
+      String input = in.readLine();
       while(input.length() == 0) {
           // if user didn't input something but just enter
            System.out.print("\tThis cannot be null! Try again: ");
@@ -1087,8 +1087,8 @@ public class DBProject {
          getting_rows = 1;
       }
 
-      String query = "SELECT mc.name, COUNT(*) AS total_repair_count FROM MaintenanceCompany mc, Repair r WHERE mc.cmpID = r.mCompany GROUP BY r.mCompany ORDER BY total_repair_count DESC LIMIT " + Integer.toString(getting_rows);
-      System.out.println("Query made is: " + query);
+      String query = "SELECT mc.name, COUNT(*) AS total_repair_count FROM MaintenanceCompany mc, Repair r WHERE mc.cmpID = r.mCompany GROUP BY mc.name ORDER BY total_repair_count DESC LIMIT " + Integer.toString(getting_rows);
+      //System.out.println("Query made is: " + query);
       int rowCount = esql.executeQuery(query);
       System.out.println("total row(s): " + rowCount);
      } catch(Exception e) {
