@@ -889,7 +889,7 @@ public class DBProject {
         stmt.close();
 
         // complete request insert query
-        rq_query += Integer.toString(new_id) + ", " + Integer.toString(m_id) + ", " + rp_id + ", '" + rq_date + "', ''" + description + "')";
+        rq_query += Integer.toString(new_id) + ", " + Integer.toString(m_id) + ", " + rp_id + ", '" + rq_date + "', '" + description + "')";
 
         // insert into request relation
         //System.out.println("Query made is: " + rq_query);
