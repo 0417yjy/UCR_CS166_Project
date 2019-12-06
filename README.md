@@ -38,7 +38,8 @@
 	* Given a hotel ID and customer ID, get the total cost incurred by the customer for a given data range. - FCT 14
 * **Hotel Staff**:
 	* Given a Hotel ID, list all details pertaining to staff, including their positions/roles (Hotel Managers, Receptionists, House cleaning, etc.) who are employed by that hotel. - FCT 15
-	* Hotel Managers may make maintenance/room repair requests, which will be handled by a maintenance company. The maintenance company must be certified to handle that specific type of repair. Given a manager ID list the hotel ID, room number and date of request.
+	* Hotel Managers may make maintenance/room repair requests, which will be handled by a maintenance company. The maintenance company must be certified to handle that specific type of repair. - FCT 7
+	* Given a manager ID list the hotel ID, room number and date of request.
 	* Given a hotel ID and House cleaning staff ID list all the rooms he/she is assigned to.
 * **Customers**:
 	* Given customer ID, list all the rooms previously booked by that customer in all the hotels.

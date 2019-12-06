@@ -948,21 +948,38 @@ public class DBProject {
         // get description from Repair
         Statement stmt = esql._connection.createStatement();
          // issues the update instruction
-        ResultSet rs =  stmt.executeQuery("SELECT description FROM Repair Where rID = " + rp_id);
+        ResultSet rs =  stmt.executeQuery("SELECT mCompany, description FROM Repair Where rID = " + rp_id);
         // gets the result of count
         rs.next();
-        String description = rs.getString(1);
+        String cmp_id = rs.getString(1);
+        String description = rs.getString(2);
         // close the instruction
         stmt.close();
 
-        // complete request insert query
-        rq_query += Integer.toString(new_id) + ", " + Integer.toString(m_id) + ", " + rp_id + ", '" + rq_date + "', '" + description + "')";
+        // get isCertified of maintenance company
+        stmt = esql._connection.createStatement();
+         // issues the update instruction
+        rs =  stmt.executeQuery("SELECT isCertified FROM MaintenanceCompany Where cmpID = " + cmp_id);
+        // gets the result of count
+        rs.next();
+        boolean is_certified = rs.getBoolean(1);
+        // close the instruction
+        stmt.close(); 
 
-        // insert into request relation
-        //System.out.println("Query made is: " + rq_query);
-        System.out.print("Executing query...");
-        esql.executeUpdate(rq_query);
-        System.out.println("Completed");
+        // Insert it only if maintenance company is certified
+        if(is_certified) {
+            // complete request insert query
+            rq_query += Integer.toString(new_id) + ", " + Integer.toString(m_id) + ", " + rp_id + ", '" + rq_date + "', '" + description + "')";
+
+            // insert into request relation
+            //System.out.println("Query made is: " + rq_query);
+            System.out.print("Executing query...");
+            esql.executeUpdate(rq_query);
+            System.out.println("Completed");
+        }
+        else {
+            System.out.println("Request insertion denied because the company isn't certified!");
+        }
     } catch(Exception e){
         System.err.println (e.getMessage());
     }
