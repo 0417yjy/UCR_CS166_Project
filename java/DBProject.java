@@ -1075,7 +1075,7 @@ public class DBProject {
         }
         String end_date = input;
 
-        System.out.print("\t*How many rows do you want to get? : ");
+        System.out.print("\tHow many rows do you want to get? (1 if null inserted): ");
         input = in.readLine();
         while(input.length() == 0) {
            // if user didn't input something but just enter
@@ -1084,13 +1084,20 @@ public class DBProject {
         }
         String getting_rows_str = input;
         int getting_rows;
-        // parse user inputs into integer
-        try {
-            getting_rows = Integer.parseInt(getting_rows_str);
-        }
-        catch(NumberFormatException e) {
-            System.out.println("Failed to get number from your input! Number K will be 1..");
+
+        if(input.length() == 0) {
+            System.out.println("You didn't answer! Number K will be 1..");
             getting_rows = 1;
+        }
+        else {
+        // parse user inputs into integer
+            try {
+                getting_rows = Integer.parseInt(getting_rows_str);
+            }
+            catch(NumberFormatException e) {
+                System.out.println("Failed to get number from your input! Number K will be 1..");
+                getting_rows = 1;
+            }
         }
 
         String query = "SELECT * FROM Booking WHERE bookingDate >= '" + start_date + "' AND bookingDate <= '" + end_date + "' ORDER BY price DESC LIMIT " + Integer.toString(getting_rows);
@@ -1127,26 +1134,28 @@ public class DBProject {
             }
         }
 
-        System.out.print("\t*How many rows do you want to get? : ");
+        System.out.print("\tHow many rows do you want to get? (1 if null inserted): ");
         input = in.readLine();
-        while(input.length() == 0) {
-           // if user didn't input something but just enter
-           System.out.print("\tThis cannot be null! Try again: ");
-           input = in.readLine();
-        }
         String getting_rows_str = input;
         int getting_rows;
-        // parse user inputs into integer
-        try {
-            getting_rows = Integer.parseInt(getting_rows_str);
-        }
-        catch(NumberFormatException e) {
-            System.out.println("Failed to get number from your input! Number K will be 1..");
+
+        if(input.length() == 0) {
+            System.out.println("You didn't answer! Number K will be 1..");
             getting_rows = 1;
+        }
+        else {
+        // parse user inputs into integer
+            try {
+                getting_rows = Integer.parseInt(getting_rows_str);
+            }
+            catch(NumberFormatException e) {
+                System.out.println("Failed to get number from your input! Number K will be 1..");
+                getting_rows = 1;
+            }
         }
 
         String query = "SELECT customer as customer_id, price FROM Booking WHERE customer = " + Integer.toString(customer_id) + " ORDER BY price DESC LIMIT " + Integer.toString(getting_rows);
-        System.out.println("Query made is: " + query);
+        //System.out.println("Query made is: " + query);
         int rowCount = esql.executeQuery(query);
         System.out.println("total row(s): " + rowCount);
      } catch (Exception e) {
@@ -1230,7 +1239,7 @@ public class DBProject {
       int cmp_id = esql.getID(3, input, "MaintenanceCompany");
 
       String query = "SELECT rID as repair_id, hotelID, roomNo, repairType FROM Repair WHERE mCompany = " + Integer.toString(cmp_id);
-      System.out.println("Query made is: " + query);
+      //System.out.println("Query made is: " + query);
       int rowCount = esql.executeQuery(query);
       System.out.println("total row(s): " + rowCount);
      } catch (Exception e) {
@@ -1241,23 +1250,27 @@ public class DBProject {
    public static void topKMaintenanceCompany(DBProject esql){
 	  // List Top K Maintenance Company Names based on total repair count (descending order)
      try {
-      System.out.print("\t*How many rows do you want to get? : ");
+      
+
+      System.out.print("\tHow many rows do you want to get? (1 if null inserted): ");
       String input = in.readLine();
-      while(input.length() == 0) {
-          // if user didn't input something but just enter
-           System.out.print("\tThis cannot be null! Try again: ");
-           input = in.readLine();
-      }
       String getting_rows_str = input;
       int getting_rows;
-      // parse user inputs into integer
-      try {
-         getting_rows = Integer.parseInt(getting_rows_str);
-      }
-      catch(NumberFormatException e) {
-         System.out.println("Failed to get number from your input! Number K will be 1..");
-         getting_rows = 1;
-      }
+
+        if(input.length() == 0) {
+            System.out.println("You didn't answer! Number K will be 1..");
+            getting_rows = 1;
+        }
+        else {
+        // parse user inputs into integer
+            try {
+                getting_rows = Integer.parseInt(getting_rows_str);
+            }
+            catch(NumberFormatException e) {
+                System.out.println("Failed to get number from your input! Number K will be 1..");
+                getting_rows = 1;
+            }
+        }
 
       String query = "SELECT mc.name, COUNT(*) AS total_repair_count FROM MaintenanceCompany mc, Repair r WHERE mc.cmpID = r.mCompany GROUP BY mc.name ORDER BY total_repair_count DESC LIMIT " + Integer.toString(getting_rows);
       //System.out.println("Query made is: " + query);
