@@ -280,6 +280,7 @@ public class DBProject {
             System.out.print(rs.getString(i));
          }
          System.out.println ();
+         ++rowCount;
       }
       stmt.close ();
       return rowCount;
