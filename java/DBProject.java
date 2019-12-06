@@ -1138,9 +1138,33 @@ public class DBProject {
    
    public static void numberOfRepairsForEachRoomPerYear(DBProject esql){
 	  // Given a hotelID, roomNo, get the count of repairs per year
-      // Your code goes here.
-      // ...
-      // ...
+     try{
+      //get user inputs
+      System.out.print("\t*Enter HotelID: ");
+      String input = in.readLine();
+      while(input.length() == 0) {
+          //if user didn't input something but just enter
+          System.out.print("\tHotelID cannot be null! Try again:");
+          input = in.readLine();
+         }
+      String hotelID = input;
+
+      System.out.print("\t*Enter RoomNo: ");
+      input = in.readLine();
+      while(input.length() ==0){
+         System.out.print("\tRoomNo cannot be null! Try again: ");
+         input = in.readLine();
+         }
+      String roomNo = input;
+      
+      String query = "SELECT EXTRACT(year from repairDate) as yyyy, COUNT(*) as num_of_repairs FROM Repair WHERE hotelID = " + hotelID + " AND roomNo = " + roomNo + " GROUP BY EXTRACT(year from repairDate)";
+      System.out.println("Query made is: " + query);
+      int rowCount = esql.executeQuery(query);
+      System.out.println("total row(s): " + rowCount);
+      
+      }catch(Exception e) {
+         System.err.println(e.getMessage());
+      }
    }//end listRepairsMade
 
 }//end DBProject
