@@ -1157,7 +1157,7 @@ public class DBProject {
          }
       String roomNo = input;
       
-      String query = "SELECT EXTRACT(year from repairDate) as yyyy, COUNT(*) as num_of_repairs FROM Repair WHERE hotelID = " + hotelID + " AND roomNo = " + roomNo + " GROUP BY EXTRACT(year from repairDate)";
+      String query = "SELECT TO_CHAR(repairDate, 'YYYY') as year, COUNT(*) as num_of_repairs FROM Repair WHERE hotelID = " + hotelID + " AND roomNo = " + roomNo + " GROUP BY year";
       System.out.println("Query made is: " + query);
       int rowCount = esql.executeQuery(query);
       System.out.println("total row(s): " + rowCount);
