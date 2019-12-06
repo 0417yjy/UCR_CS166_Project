@@ -335,19 +335,20 @@ public class DBProject {
 				    System.out.println("|| 14. Get customer total cost occurred for a give date range         ||"); 
             System.out.println("||                                                                    ||");
             System.out.println("***************************** Hotel Staff ******************************");
-				    System.out.println("|| 15. List the staff detail                                          ||");
+			   System.out.println("|| 15. List the staff detail                                          ||");
             System.out.println("|| 16. List request detail by managerID                               ||");
+            System.out.println("|| 17. List the rooms for a cleaning staff that he/she is assigned to ||");
             System.out.println("****************************** Customers *******************************");
-				    System.out.println("|| 17. Get top k highest booking price for a customer                 ||");
+				    System.out.println("|| 18. Get top k highest booking price for a customer                 ||");
             System.out.println("||                                                                    ||");
             System.out.println("************************ Maintenance Companies *************************");
-				    System.out.println("|| 18. List the repairs made by maintenance company                   ||");
-				    System.out.println("|| 19. Get top k maintenance companies based on repair count          ||");
-				    System.out.println("|| 20. Get number of repairs occurred per year for a given hotel room ||");
+				    System.out.println("|| 19. List the repairs made by maintenance company                   ||");
+				    System.out.println("|| 20. Get top k maintenance companies based on repair count          ||");
+				    System.out.println("|| 21. Get number of repairs occurred per year for a given hotel room ||");
             System.out.println("||                                                                    ||");
             System.out.println("************************************************************************");
-            System.out.println("|| 21. Custom Query                                                   ||");
-				    System.out.println("|| 22. < EXIT                                                         ||");
+            System.out.println("|| 22. Custom Query                                                   ||");
+				    System.out.println("|| 23. < EXIT                                                         ||");
             System.out.println("************************************************************************\n");
 
             switch (readChoice()){
@@ -372,8 +373,8 @@ public class DBProject {
 				   case 19: listRepairsMade(esql); break;
 				   case 20: topKMaintenanceCompany(esql); break;
 				   case 21: numberOfRepairsForEachRoomPerYear(esql); break;
-                 //  case 22: executeCustom(esql); break;
-				   case 22: keepon = false; break;
+               case 22: executeCustom(esql); break;
+				   case 23: keepon = false; break;
 				   default : System.out.println("Unrecognized choice!"); break;
             }//end switch
          }//end while
