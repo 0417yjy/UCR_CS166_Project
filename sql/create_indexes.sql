@@ -56,7 +56,7 @@ CREATE INDEX Repair_roomNo_index
 ON Repair (roomNo);
 
 CREATE INDEX Repair_rID_index
-ON Request (rID);
+ON Repair (rID);
 
 CREATE INDEX Repair_hotelID_index
 ON Repair (hotelID);
